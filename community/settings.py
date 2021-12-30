@@ -161,7 +161,7 @@ LOCATION_FIELD = {
 
     # Google
     'provider.google.api': '//maps.google.com/maps/api/js?sensor=false',
-    'provider.google.api_key': 'AIzaSyCKfrDnj_uke36gzh7N9aWel_FF3e_U9V0',
+    'provider.google.api_key': '',
     'provider.google.api_libraries': '',
     'provider.google.map.type': 'ROADMAP',
     'resources.root_path': '/' + STATIC_URL + LOCATION_FIELD_PATH,
@@ -172,5 +172,5 @@ LOCATION_FIELD = {
     },
 }
 
-EASY_MAPS_GOOGLE_KEY = 'AIzaSyCKfrDnj_uke36gzh7N9aWel_FF3e_U9V0'
+EASY_MAPS_GOOGLE_KEY = ''
 EASY_MAPS_CENTER = (-41.3, 32)
