@@ -1,15 +1,6 @@
 version: "3.9"
    
 services:
-  swe578_mariadb:
-    container_name: swe578-mariadb
-    build: ./etc/docker/mariadb
-    volumes:
-      - ./etc/docker/mariadb/config:/etc/mysql/conf.d
-    env_file:
-      - ./etc/docker/mariadb/env/common.env
-    ports:
-      - "28001:3306"
   swe578_web:
     container_name: swe578-web
     build: ./etc/docker/web
@@ -20,6 +11,15 @@ services:
       - "28000:8000"
     depends_on:
       - swe578_mariadb
+  swe578_mariadb:
+    container_name: swe578-mariadb
+    build: ./etc/docker/mariadb
+    volumes:
+      - ./etc/docker/mariadb/config:/etc/mysql/conf.d
+    env_file:
+      - ./etc/docker/mariadb/env/common.env
+    ports:
+      - "28001:3306"
   swe578_elasticsearch:
     container_name: swe578-elasticsearch
     build: ./etc/docker/elasticsearch
