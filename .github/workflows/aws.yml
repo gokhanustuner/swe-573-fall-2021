@@ -67,6 +67,6 @@ jobs:
           ECR_REPOSITORY: community
           IMAGE_TAG: ${{ steps.tag-number.outputs.tag }}
         run: |
-          docker build -f /home/runner/work/swe-573-fall-2021/etc/Docker/web/Dockerfile -t community .
+          docker build -f /home/runner/work/swe-573-fall-2021/etc/docker/web/Dockerfile -t community .
           docker tag community:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
