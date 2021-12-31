@@ -23,4 +23,4 @@ jobs:
           echo $RELEASE_VERSION
           echo ${{ steps.vars.outputs.tag }}
       - name: Build the Docker image
-        run: docker build --file ./etc/Docker/web/Dockerfile ./etc/Docker/mariadb/Dockerfile ./etc/Docker/elasticsearch/Dockerfile --tag ${GITHUB_REF#refs/*/}
+        run: docker build --file ./etc/Docker/web/Dockerfile ./etc/Docker/mariadb/Dockerfile ./etc/Docker/elasticsearch/Dockerfile --tag ${GITHUB_REF#refs/*/} .
