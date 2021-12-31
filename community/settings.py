@@ -90,7 +90,7 @@ DATABASES = {
         'HOST': 'swe578_mariadb',
         'PORT': '3306',
         'OPTIONS': {
-            'read_default_file': '../etc/docker/etc/config/general-log.cnf',
+            'read_default_file': '../etc/docker/mariadb/config/general-log.cnf',
         }
     }
 }
