@@ -18,7 +18,7 @@ jobs:
         lfs: 'true'
     - 
       name: Build the Docker image
-      run: docker build -t 059c6c91076f/community-app -f ./etc/docker/web/Dockerfile .
+      run: docker build -t 059c6c91076f/community-app -f ./etc/docker/web/Dockerfile ./etc/docker/web/
     -
       name: Generate Deployment Package
       run: zip -r deploy.zip *
