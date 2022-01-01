@@ -27,9 +27,9 @@
 name: Deploy to Amazon ECS
 
 on: 
-  push:
-    branches:
-      - master
+  create:
+    tags:
+      - .*
 jobs:
   ecr:
     # Name the Job
