@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-2:971792938567:task-definition/swe_578_task_definition:1",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-2:971792938567:task-definition/swe_578_task_definition:2",
     "containerDefinitions": [
         {
             "name": "swe_578",
-            "image": "971792938567.dkr.ecr.us-east-2.amazonaws.com/community:931f9f944c53b56f6a04268cc1d319106c65f4ae",
+            "image": "971792938567.dkr.ecr.af-south-1.amazonaws.com/community:931f9f944c53b56f6a04268cc1d319106c65f4ae",
             "cpu": 0,
             "links": [],
             "portMappings": [
@@ -32,7 +32,7 @@
     "family": "swe_578_task_definition",
     "executionRoleArn": "arn:aws:iam::971792938567:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 1,
+    "revision": 2,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -68,6 +68,6 @@
     ],
     "cpu": "256",
     "memory": "512",
-    "registeredAt": "2022-01-01T16:27:09.144000+03:00",
+    "registeredAt": "2022-01-01T17:18:33.398000+03:00",
     "registeredBy": "arn:aws:iam::971792938567:root"
 }
