@@ -1,5 +1,5 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-2:971792938567:task-definition/swe_578_task_definition:2",
+    "taskDefinitionArn": "arn:aws:ecs:af-south-1:971792938567:task-definition/swe_578_task_definition:1",
     "containerDefinitions": [
         {
             "name": "swe_578",
@@ -23,7 +23,7 @@
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-group": "/ecs/swe_578_task_definition",
-                    "awslogs-region": "us-east-2",
+                    "awslogs-region": "af-south-1",
                     "awslogs-stream-prefix": "ecs"
                 }
             }
@@ -32,7 +32,7 @@
     "family": "swe_578_task_definition",
     "executionRoleArn": "arn:aws:iam::971792938567:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 2,
+    "revision": 1,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -68,6 +68,6 @@
     ],
     "cpu": "256",
     "memory": "512",
-    "registeredAt": "2022-01-01T17:18:33.398000+03:00",
+    "registeredAt": "2022-01-01T17:25:26.650000+03:00",
     "registeredBy": "arn:aws:iam::971792938567:root"
 }
