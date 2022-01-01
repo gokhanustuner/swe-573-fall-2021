@@ -20,3 +20,17 @@ services:
       - ./etc/docker/mariadb/env/common.env
     ports:
       - "28001:3306"
+  swe578_elasticsearch:
+    container_name: swe578-elasticsearch
+    build: ./etc/docker/elasticsearch
+    ports:
+      - "28002:9200"
+      - "28003:9300"
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
