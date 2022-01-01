@@ -1,73 +1,257 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:af-south-1:971792938567:task-definition/swe_578_task_definition:1",
+    "family": "",
+    "taskRoleArn": "",
+    "executionRoleArn": "",
+    "networkMode": "host",
     "containerDefinitions": [
         {
             "name": "swe_578",
-            "image": "971792938567.dkr.ecr.af-south-1.amazonaws.com/community:931f9f944c53b56f6a04268cc1d319106c65f4ae",
+            "image": "",
+            "repositoryCredentials": {
+                "credentialsParameter": ""
+            },
             "cpu": 0,
-            "links": [],
+            "memory": 0,
+            "memoryReservation": 0,
+            "links": [
+                ""
+            ],
             "portMappings": [
                 {
-                    "containerPort": 28000,
-                    "hostPort": 28000,
-                    "protocol": "tcp"
+                    "containerPort": 0,
+                    "hostPort": 0,
+                    "protocol": "udp"
                 }
             ],
             "essential": true,
-            "entryPoint": [],
-            "command": [],
-            "environment": [],
-            "mountPoints": [],
-            "volumesFrom": [],
+            "entryPoint": [
+                ""
+            ],
+            "command": [
+                ""
+            ],
+            "environment": [
+                {
+                    "name": "",
+                    "value": ""
+                }
+            ],
+            "environmentFiles": [
+                {
+                    "value": "",
+                    "type": "s3"
+                }
+            ],
+            "mountPoints": [
+                {
+                    "sourceVolume": "",
+                    "containerPath": "",
+                    "readOnly": true
+                }
+            ],
+            "volumesFrom": [
+                {
+                    "sourceContainer": "",
+                    "readOnly": true
+                }
+            ],
+            "linuxParameters": {
+                "capabilities": {
+                    "add": [
+                        ""
+                    ],
+                    "drop": [
+                        ""
+                    ]
+                },
+                "devices": [
+                    {
+                        "hostPath": "",
+                        "containerPath": "",
+                        "permissions": [
+                            "mknod"
+                        ]
+                    }
+                ],
+                "initProcessEnabled": true,
+                "sharedMemorySize": 0,
+                "tmpfs": [
+                    {
+                        "containerPath": "",
+                        "size": 0,
+                        "mountOptions": [
+                            ""
+                        ]
+                    }
+                ],
+                "maxSwap": 0,
+                "swappiness": 0
+            },
+            "secrets": [
+                {
+                    "name": "",
+                    "valueFrom": ""
+                }
+            ],
+            "dependsOn": [
+                {
+                    "containerName": "",
+                    "condition": "START"
+                }
+            ],
+            "startTimeout": 0,
+            "stopTimeout": 0,
+            "hostname": "",
+            "user": "",
+            "workingDirectory": "",
+            "disableNetworking": true,
+            "privileged": true,
+            "readonlyRootFilesystem": true,
+            "dnsServers": [
+                ""
+            ],
+            "dnsSearchDomains": [
+                ""
+            ],
+            "extraHosts": [
+                {
+                    "hostname": "",
+                    "ipAddress": ""
+                }
+            ],
+            "dockerSecurityOptions": [
+                ""
+            ],
+            "interactive": true,
+            "pseudoTerminal": true,
+            "dockerLabels": {
+                "KeyName": ""
+            },
+            "ulimits": [
+                {
+                    "name": "locks",
+                    "softLimit": 0,
+                    "hardLimit": 0
+                }
+            ],
             "logConfiguration": {
-                "logDriver": "awslogs",
+                "logDriver": "gelf",
                 "options": {
-                    "awslogs-group": "/ecs/swe_578_task_definition",
-                    "awslogs-region": "af-south-1",
-                    "awslogs-stream-prefix": "ecs"
+                    "KeyName": ""
+                },
+                "secretOptions": [
+                    {
+                        "name": "",
+                        "valueFrom": ""
+                    }
+                ]
+            },
+            "healthCheck": {
+                "command": [
+                    ""
+                ],
+                "interval": 0,
+                "timeout": 0,
+                "retries": 0,
+                "startPeriod": 0
+            },
+            "systemControls": [
+                {
+                    "namespace": "",
+                    "value": ""
+                }
+            ],
+            "resourceRequirements": [
+                {
+                    "value": "",
+                    "type": "InferenceAccelerator"
+                }
+            ],
+            "firelensConfiguration": {
+                "type": "fluentbit",
+                "options": {
+                    "KeyName": ""
                 }
             }
         }
     ],
-    "family": "swe_578_task_definition",
-    "executionRoleArn": "arn:aws:iam::971792938567:role/ecsTaskExecutionRole",
-    "networkMode": "awsvpc",
-    "revision": 1,
-    "volumes": [],
-    "status": "ACTIVE",
-    "requiresAttributes": [
+    "volumes": [
         {
-            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-        },
-        {
-            "name": "ecs.capability.execution-role-awslogs"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.ecr-auth"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-        },
-        {
-            "name": "ecs.capability.execution-role-ecr-pull"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-        },
-        {
-            "name": "ecs.capability.task-eni"
+            "name": "",
+            "host": {
+                "sourcePath": ""
+            },
+            "dockerVolumeConfiguration": {
+                "scope": "task",
+                "autoprovision": true,
+                "driver": "",
+                "driverOpts": {
+                    "KeyName": ""
+                },
+                "labels": {
+                    "KeyName": ""
+                }
+            },
+            "efsVolumeConfiguration": {
+                "fileSystemId": "",
+                "rootDirectory": "",
+                "transitEncryption": "DISABLED",
+                "transitEncryptionPort": 0,
+                "authorizationConfig": {
+                    "accessPointId": "",
+                    "iam": "ENABLED"
+                }
+            },
+            "fsxWindowsFileServerVolumeConfiguration": {
+                "fileSystemId": "",
+                "rootDirectory": "",
+                "authorizationConfig": {
+                    "credentialsParameter": "",
+                    "domain": ""
+                }
+            }
         }
     ],
-    "placementConstraints": [],
-    "compatibilities": [
-        "EC2",
-        "FARGATE"
+    "placementConstraints": [
+        {
+            "type": "memberOf",
+            "expression": ""
+        }
     ],
     "requiresCompatibilities": [
-        "FARGATE"
+        "EXTERNAL"
     ],
-    "cpu": "256",
-    "memory": "512",
-    "registeredAt": "2022-01-01T17:25:26.650000+03:00",
-    "registeredBy": "arn:aws:iam::971792938567:root"
+    "cpu": "",
+    "memory": "",
+    "tags": [
+        {
+            "key": "",
+            "value": ""
+        }
+    ],
+    "pidMode": "host",
+    "ipcMode": "host",
+    "proxyConfiguration": {
+        "type": "APPMESH",
+        "containerName": "",
+        "properties": [
+            {
+                "name": "",
+                "value": ""
+            }
+        ]
+    },
+    "inferenceAccelerators": [
+        {
+            "deviceName": "",
+            "deviceType": ""
+        }
+    ],
+    "ephemeralStorage": {
+        "sizeInGiB": 0
+    },
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "WINDOWS_SERVER_2016_FULL"
+    }
 }
