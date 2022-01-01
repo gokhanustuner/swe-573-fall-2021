@@ -4,33 +4,8 @@ services:
   swe578_web:
     container_name: swe578-web
     build: ./etc/docker/web
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:
-      - "28000:8000"
-    depends_on:
-      - swe578_mariadb
-  swe578_mariadb:
-    container_name: swe578-mariadb
-    build: ./etc/docker/mariadb
-    volumes:
-      - ./etc/docker/mariadb/config:/etc/mysql/conf.d
-    env_file:
-      - ./etc/docker/mariadb/env/common.env
-    ports:
-      - "28001:3306"
-  swe578_elasticsearch:
-    container_name: swe578-elasticsearch
-    build: ./etc/docker/elasticsearch
-    ports:
-      - "28002:9200"
-      - "28003:9300"
-    environment:
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.type=single-node"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    mem_limit: 2g
+      - "8000:8000"
