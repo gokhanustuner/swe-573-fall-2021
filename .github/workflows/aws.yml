@@ -36,7 +36,7 @@ env:
   ECR_REPOSITORY: community           # set this to your Amazon ECR repository name
   ECS_SERVICE: swe_578-service                 # set this to your Amazon ECS service name
   ECS_CLUSTER: swe-578-cluster                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: swe_578_task_definition:1 # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION: ./task-definition.json # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: swe_578           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
