@@ -12,6 +12,8 @@ services:
       - "80:8000"
     depends_on:
       - swe578_mariadb
+    restart: always
+
   swe578_mariadb:
     container_name: swe578-mariadb
     build: ./etc/docker/mariadb
