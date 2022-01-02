@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-hxbpraj5pl@tse*(2k(&d7bc^57d#y(37%$i!13@q^)^3r0cc$'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    'communityapp-env-1.eba-w26fpz3a.us-east-2.elasticbeanstalk.com',
+    os.environ.get('ALLOWED_HOST_EB')
 ]
 
 
@@ -86,9 +88,9 @@ WSGI_APPLICATION = 'community.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'community',
-        'USER': 'master_user',
-        'PASSWORD': 'can_all',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
         'HOST': 'swe578_mariadb',
         'PORT': '3306',
         'OPTIONS': {
@@ -163,7 +165,7 @@ LOCATION_FIELD = {
 
     # Google
     'provider.google.api': '//maps.google.com/maps/api/js?sensor=false',
-    'provider.google.api_key': '',
+    'provider.google.api_key': config('GOOGLE_API_KEY'),
     'provider.google.api_libraries': '',
     'provider.google.map.type': 'ROADMAP',
     'resources.root_path': '/' + STATIC_URL + LOCATION_FIELD_PATH,
@@ -174,5 +176,10 @@ LOCATION_FIELD = {
     },
 }
 
-EASY_MAPS_GOOGLE_KEY = ''
+EASY_MAPS_GOOGLE_KEY = config('GOOGLE_API_KEY')
 EASY_MAPS_CENTER = (-41.3, 32)
+
+try:
+    from community.local_settings import *
+except ImportError:
+    pass
