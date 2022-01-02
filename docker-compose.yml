@@ -1,5 +1,5 @@
 version: "3.9"
-   
+
 services:
   swe578_web:
     container_name: swe578-web
@@ -21,5 +21,21 @@ services:
       - ./etc/docker/mariadb/config:/etc/mysql/conf.d
     env_file:
       - ./etc/docker/mariadb/env/common.env
+    restart: always
     ports:
       - "28001:3306"
+
+  swe578_elasticsearch:
+    container_name: swe578-elasticsearch
+    build: ./etc/docker/elasticsearch
+    ports:
+      - "28002:9200"
+      - "28003:9300"
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
