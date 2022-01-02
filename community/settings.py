@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'community.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -94,7 +94,7 @@ DATABASES = {
         }
     }
 }
-
+"""
 ELASTICSEARCH_DSL = {
     'default': {
         'hosts': 'swe578_elasticsearch:9200',
