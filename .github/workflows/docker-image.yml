@@ -44,5 +44,5 @@ jobs:
         application_name: community-app
         environment_name: Communityapp-env
         version_label: "community-app-${{ steps.format-time.outputs.replaced }}"
-        region: us-east-2
+        region: af-south-1
         deployment_package: deploy.zip
