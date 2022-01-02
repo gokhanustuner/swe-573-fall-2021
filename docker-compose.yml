@@ -10,3 +10,14 @@ services:
       - .:/app
     ports:
       - "80:8000"
+    depends_on:
+      - swe578_mariadb
+  swe578_mariadb:
+    container_name: swe578-mariadb
+    build: ./etc/docker/mariadb
+    volumes:
+      - ./etc/docker/mariadb/config:/etc/mysql/conf.d
+    env_file:
+      - ./etc/docker/mariadb/env/common.env
+    ports:
+      - "28001:3306"
