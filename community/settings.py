@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -87,9 +88,9 @@ WSGI_APPLICATION = 'community.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DATABASE_NAME'),
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
         'HOST': 'swe578_mariadb',
         'PORT': '3306',
         'OPTIONS': {
@@ -164,7 +165,7 @@ LOCATION_FIELD = {
 
     # Google
     'provider.google.api': '//maps.google.com/maps/api/js?sensor=false',
-    'provider.google.api_key': os.environ.get('GOOGLE_API_KEY'),
+    'provider.google.api_key': config('GOOGLE_API_KEY'),
     'provider.google.api_libraries': '',
     'provider.google.map.type': 'ROADMAP',
     'resources.root_path': '/' + STATIC_URL + LOCATION_FIELD_PATH,
@@ -175,7 +176,7 @@ LOCATION_FIELD = {
     },
 }
 
-EASY_MAPS_GOOGLE_KEY = os.environ.get('GOOGLE_API_KEY')
+EASY_MAPS_GOOGLE_KEY = config('GOOGLE_API_KEY')
 EASY_MAPS_CENTER = (-41.3, 32)
 
 try:
