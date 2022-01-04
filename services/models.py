@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
+from django.urls import reverse
 
 
 class Service(models.Model):
@@ -43,7 +44,7 @@ class Service(models.Model):
     title = models.CharField(verbose_name=_('Title'), max_length=500)
     description = models.TextField(verbose_name=_('Service description'))
     location = PlainLocationField(based_fields=['city'], zoom=7)
-    owner = models.OneToOneField(
+    owner = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Service owner')
@@ -102,6 +103,9 @@ class Service(models.Model):
 
     def is_cancelled(self):
         return self.cancelled == self.ServiceCancelled.YES
+
+    def get_absolute_url(self):
+        return reverse('services.detail', kwargs={'pk': self.pk})
 
 
 class ServiceAttendanceRequest(models.Model):

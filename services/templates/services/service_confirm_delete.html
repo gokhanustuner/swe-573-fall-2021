@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Welcome to Community!!!</title>
+  </head>
+<body>
+    {% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Delete Service</legend>
+            <h2>Are you sure you want to delete this service "{{ object }}"?</h2>
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
+            <a class="btn btn-outline-secondary" href="{% url 'services.detail' object.pk %}">Cancel</a>
+        </div>
+    </form>
+    {% endblock %}
+</body>

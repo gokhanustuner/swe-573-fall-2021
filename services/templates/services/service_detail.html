@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ object.title }} Detail | Community</title>
+</head>
+<body>
+    <article class="media">
+        <img class="rounded-circle article-img" src="{% url 'members.show' object.owner_id %}">
+        <div class="breadcrumb">
+            <a class="mr-2">{{ object.owner }}</a>
+            <small class="text-muted">{{ object.created_at|date:"F d, Y" }}</small>
+            <a class="mr-2" href="{% url 'services.delete' object.pk %}">Delete</a>
+        </div>
+        <div class="media-body">
+            <h2>{{ object.title }}</h2>
+            <p>{{ object.description }}</p>
+        </div>
+    </article>
+</body>
+</html>
