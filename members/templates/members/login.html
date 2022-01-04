@@ -25,6 +25,6 @@
 {% endblock %}
 {% block additional_links %}
     <div class="form-group mb-1"><a onclick="document.getElementById('login-form').submit()" href="#" class="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0 ">Login</a></div>
-    <h6 class="text-grey-500 font-xsss fw-500 mt-0 mb-0 lh-32">Dont have account <a href="register.html" class="fw-700 ms-1">Register</a></h6>
+    <h6 class="text-grey-500 font-xsss fw-500 mt-0 mb-0 lh-32">Dont have account <a href="{% url 'members.register' %}" class="fw-700 ms-1">Register</a></h6>
 {% endblock %}
 {% block form_id %}login-form{% endblock %}
