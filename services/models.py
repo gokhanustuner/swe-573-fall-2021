@@ -43,7 +43,7 @@ class Service(models.Model):
 
     title = models.CharField(verbose_name=_('Title'), max_length=500)
     description = models.TextField(verbose_name=_('Service description'))
-    location = PlainLocationField(based_fields=['city'], zoom=7)
+    location = models.CharField(max_length=63)
     owner = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,

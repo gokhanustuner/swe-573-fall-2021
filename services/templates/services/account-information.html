@@ -22,15 +22,7 @@
 
     
     <div class="main-wrapper">
-        {% if form.errors and form.non_field_errors %}
-            <div class="alert alert-danger">
-                <ul>
-                {% for error in form.non_field_errors %}
-                    <li>{{ error|escape }}</li>
-                {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+
         <!-- navigation top-->
         <div class="nav-header bg-white shadow-xs border-0">
             <div class="nav-top">
@@ -195,7 +187,7 @@
                             <li><a href="{% url 'members.home' %}" class="nav-content-bttn open-font" ><i class="feather-tv btn-round-md bg-blue-gradiant me-3"></i><span>Newsfeed</span></a></li>
                             <li><a href="default-badge.html" class="nav-content-bttn open-font" ><i class="feather-award btn-round-md bg-red-gradiant me-3"></i><span>Badges</span></a></li>
                             <li><a href="default-group.html" class="nav-content-bttn open-font" ><i class="feather-zap btn-round-md bg-mini-gradiant me-3"></i><span>Popular Events</span></a></li>
-                            <li><a href="{% url 'members.show' user.pk %}" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Member Profile</span></a></li>
+                            <li><a href="{% url 'members.show' %}" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Member Profile</span></a></li>
                         </ul>
                     </div>
 
@@ -232,31 +224,20 @@
                             </div>
                             <div class="card-body p-lg-5 p-4 w-100 border-0 ">
 
-                            <form method="post" id="service-form">
-                                {% csrf_token %}
+                            <form method="post">
                                 <div class="row">
                                     <div class="col-lg-6 mb-3">
                                         <div class="form-group">
                                             <label class="mont-font fw-600 font-xsss">Title</label>
                                             {{ form.title }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.title.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
+                                        </div>        
                                     </div>
 
                                     <div class="col-lg-6 mb-3">
                                         <div class="form-group">
                                             <label class="mont-font fw-600 font-xsss">Location</label>
                                             {{ form.location }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.location.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
+                                        </div>        
                                     </div>
                                 </div>
 
@@ -265,24 +246,14 @@
                                         <div class="form-group">
                                             <label class="mont-font fw-600 font-xsss">Start Date</label>
                                             {{ form.start_date }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.start_date.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
+                                        </div>        
                                     </div>
 
                                     <div class="col-lg-6 mb-3">
                                         <div class="form-group">
                                             <label class="mont-font fw-600 font-xsss">End Date</label>
                                             {{ form.end_date }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.end_date.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
+                                        </div>        
                                     </div>
                                 </div>
 
@@ -291,76 +262,40 @@
                                         <div class="form-group">
                                             <label class="mont-font fw-600 font-xsss">Description</label>
                                             {{ form.description }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.description.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
+                                        </div>        
+                                    </div>
+
+                                    <div class="col-lg-12 mb-3">
+                                        <div class="form-group">
+                                            <label class="mont-font fw-600 font-xsss">Participant Limit</label>
+                                            {{ form.participant_limit }}
+                                        </div>        
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-6 mb-3">
                                         <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Participant Limit</label>
-                                            {{ form.participant_limit }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.participant_limit.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="form-group">
                                             <label class="mont-font fw-600 font-xsss">Repetition Term</label>
                                             {{ form.repetition_term }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.repetition_term.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Privacy Status</label>
-                                            {{ form.privacy_status }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.privacy_status.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
+                                        </div>        
                                     </div>
 
                                     <div class="col-lg-6 mb-3">
                                         <div class="form-group">
                                             <label class="mont-font fw-600 font-xsss">Participant Picking</label>
                                             {{ form.participant_picking }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.participant_picking.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
+                                        </div>        
+                                    </div>
+
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="form-group">
+                                            <label class="mont-font fw-600 font-xsss">Content</label>
+                                            {{ form.content }}
                                         </div>
                                     </div>
 
                                     <div class="col-lg-12 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Content</label>
-                                            {{ form.content }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.content.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <!-- <div class="col-lg-12 mb-3">
                                         <div class="card mt-3 border-0">
                                             <div class="card-body d-flex justify-content-between align-items-end p-0">
                                                 <div class="form-group mb-0 w-100">
@@ -372,10 +307,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>-->
+                                    </div>
 
                                     <div class="col-lg-12">
-                                        <a onclick="document.getElementById('service-form').submit()" class="bg-current text-center text-white font-xsss fw-600 p-3 w175 rounded-3 d-inline-block">Save</a>
+                                        <button type="submit" class="bg-current text-center text-white font-xsss fw-600 p-3 w175 rounded-3 d-inline-block">Save</button>
                                     </div>
                                 </div>
 
