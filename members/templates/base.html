@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} | Community</title>
+    {% load static %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <style>
+        body {
+            background-color: #0A64BC;
+        }
+        .container {
+            background-color: #FFFFFF;
+        }
+        .page-header {
+            text-align: left;
+            background-color: #FFFFFF;
+            padding: 1%;
+        }
+    </style>
+    {% block javascript %}{% endblock %}
+    {% block stylesheet %}{% endblock %}
+  </head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    <h1>!!!Community!!!</h1>
+                    <small>The world's largest unpaid service and event platform!!!</small>
+                </div>
+                <div class="col-sm bg-light">
+                    {% block header_buttons %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <h2>{% block page_title %}{% endblock %}</h2>
+        {% bootstrap_messages %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

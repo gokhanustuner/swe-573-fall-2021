@@ -43,7 +43,7 @@ class Event(models.Model):
     title = models.CharField(verbose_name=_('Title'), max_length=500)
     description = models.TextField(verbose_name=_('Description'))
     location = PlainLocationField(based_fields=['city'], zoom=7)
-    owner = models.ForeignKey(
+    owner = models.OneToOneField(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Event owner')
@@ -118,12 +118,12 @@ class EventAttendanceRequest(models.Model):
         editable=False,
         unique=True,
     )
-    member = models.ForeignKey(
+    member = models.OneToOneField(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member requesting to attend to the event')
     )
-    event = models.ForeignKey(
+    event = models.OneToOneField(
         'Event',
         on_delete=models.CASCADE,
         verbose_name=_('Event requested to attend')
@@ -152,12 +152,12 @@ class EventRate(models.Model):
         editable=False,
         unique=True,
     )
-    voter = models.ForeignKey(
+    voter = models.OneToOneField(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member attending to the event')
     )
-    event = models.ForeignKey(
+    event = models.OneToOneField(
         'Event',
         on_delete=models.CASCADE,
         verbose_name=_('Attended event')

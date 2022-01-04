@@ -43,7 +43,7 @@ class Service(models.Model):
     title = models.CharField(verbose_name=_('Title'), max_length=500)
     description = models.TextField(verbose_name=_('Service description'))
     location = PlainLocationField(based_fields=['city'], zoom=7)
-    owner = models.ForeignKey(
+    owner = models.OneToOneField(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Service owner')
@@ -119,12 +119,12 @@ class ServiceAttendanceRequest(models.Model):
         editable=False,
         unique=True,
     )
-    member = models.ForeignKey(
+    member = models.OneToOneField(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member requesting to attend to the service')
     )
-    service = models.ForeignKey(
+    service = models.OneToOneField(
         'Service',
         on_delete=models.CASCADE,
         verbose_name=_('Service requested to attend')
@@ -152,13 +152,13 @@ class ServiceAttendance(models.Model):
         unique=True,
     )
 
-    member = models.ForeignKey(
+    member = models.OneToOneField(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member attending to the service')
     )
 
-    service = models.ForeignKey(
+    service = models.OneToOneField(
         'Service',
         on_delete=models.CASCADE,
         verbose_name=_('Attended service')
@@ -186,12 +186,12 @@ class ServiceRate(models.Model):
         editable=False,
         unique=True,
     )
-    voter = models.ForeignKey(
+    voter = models.OneToOneField(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member attending to the service')
     )
-    service = models.ForeignKey(
+    service = models.OneToOneField(
         'Service',
         on_delete=models.CASCADE,
         verbose_name=_('Attended service')
