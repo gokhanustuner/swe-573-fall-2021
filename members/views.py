@@ -10,8 +10,8 @@ from django.contrib.auth import authenticate, login
 
 
 @require_GET
-def show(request, member_id: uuid.UUID) -> HttpResponse:
-    return HttpResponse(f'This is the id of request {member_id.bytes}')
+def show(request, pk: int) -> HttpResponse:
+    return HttpResponse(f'This is the id of request {pk}')
 
 
 @require_GET
@@ -22,7 +22,7 @@ def home(request):
 class LoginView(FormView):
     form_class = LoginForm
     success_url = '/'
-    template_name = 'registration/login.html'
+    template_name = 'members/login.html'
 
     def form_valid(self, form):
         request = self.request
@@ -46,4 +46,4 @@ class LoginView(FormView):
 class Register(CreateView):
     form_class = RegisterForm
     success_url = reverse_lazy('members.login')
-    template_name = 'registration/register.html'
+    template_name = 'members/register.html'

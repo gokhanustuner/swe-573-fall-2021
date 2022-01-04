@@ -59,7 +59,7 @@ class Member(AbstractBaseUser):
     REQUIRED_FIELDS = ['full_name']  # python manage.py createsuperuser
 
     def __str__(self):
-        return self.email
+        return self.full_name
 
     def has_perm(self, perm, obj=None):
         return True

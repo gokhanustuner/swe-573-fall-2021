@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Welcome to Community!!!</title>
+    <style>
+     input, textarea, select {
+      display: block;
+      text-align: center;
+      }
+
+    </style>
+  </head>
+<body>
+    {% block content %}
+    <h2>Register</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{form}}
+        <input type="submit" value="Register">
+    </form>
+
+    <a href="{% url 'members.login' %}">Back to login</a>
+    <a href="{% url 'members.home' %}">Back to Home</a>
+    {% endblock %}
+</body>
