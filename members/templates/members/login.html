@@ -1,16 +1,30 @@
+{% extends 'registration-login-base.html' %}
 {% block title %}Login{% endblock %}
-
+{% block page_title %}Login into <br>your account{% endblock %}
+{% block guide_button_url %}{% url 'members.register' %}{% endblock %}
+{% block guide_button_content %}Register{% endblock %}
 {% block content %}
-  <h2>Login</h2>
-
-    <form method="post">
-      {% csrf_token %}
-      <table>
-        {{ form.as_p }}
-        <tr>
-          <td>&nbsp;</td>
-          <td><input type="submit" value="Submit"></td>
-        </tr>
-      </table>
-    </form>
+    <div class="form-group icon-input mb-3">
+        <i class="font-sm ti-email text-grey-500 pe-0"></i>
+        {{ form.email }}
+        {% if form.errors %}
+            <div class="invalid-feedback">
+                {{ form.email.errors.0|escape }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="form-group icon-input mb-1">
+        {{ form.password }}
+        {% if form.errors %}
+            <div class="invalid-feedback">
+                {{ form.password.errors.0|escape }}
+            </div>
+        {% endif %}
+        <i class="font-sm ti-lock text-grey-500 pe-0"></i>
+    </div>
 {% endblock %}
+{% block additional_links %}
+    <div class="form-group mb-1"><a onclick="document.getElementById('login-form').submit()" href="#" class="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0 ">Login</a></div>
+    <h6 class="text-grey-500 font-xsss fw-500 mt-0 mb-0 lh-32">Dont have account <a href="register.html" class="fw-700 ms-1">Register</a></h6>
+{% endblock %}
+{% block form_id %}login-form{% endblock %}
