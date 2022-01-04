@@ -43,7 +43,7 @@ class LoginView(FormView):
         return super(LoginView, self).form_invalid(form)
 
 
-class Register(CreateView):
+class RegisterView(CreateView):
     form_class = RegisterForm
     success_url = reverse_lazy('members.login')
     template_name = 'members/register.html'

@@ -3,21 +3,41 @@ from members.models import Member
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
+        'class': 'style2-input ps-5 form-control text-grey-900 font-xsss fw-600',
+        'placeholder': 'Your Email Address',
+    }))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'style2-input ps-5 form-control text-grey-900 font-xss ls-3',
+        'placeholder': 'Password'
+    }))
 
 
 class RegisterForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
-    fields, plus a repeated password."""
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+        fields, plus a repeated password."""
+    full_name = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'style2-input ps-5 form-control text-grey-900 font-xsss fw-600',
+        'placeholder': 'Your Name',
+    }))
+    email = forms.EmailField(widget=forms.TextInput(attrs={
+        'class': 'style2-input ps-5 form-control text-grey-900 font-xsss fw-600',
+        'placeholder': 'Your Email Address',
+    }))
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={
+        'class': 'style2-input ps-5 form-control text-grey-900 font-xss ls-3',
+        'placeholder': 'Password'
+    }))
+    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput(attrs={
+        'class': 'style2-input ps-5 form-control text-grey-900 font-xss ls-3',
+        'placeholder': 'Confirm Password',
+    }))
 
     class Meta:
         model = Member
         fields = (
-            'email',
             'full_name',
+            'email',
         )
 
     def clean_password2(self):
