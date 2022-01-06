@@ -7,5 +7,6 @@ urlpatterns = [
     path('new/', views.ServiceCreateView.as_view(), name='services.create'),
     path('<uuid:pk>/edit/', views.ServiceUpdateView.as_view(), name='services.update'),
     path('<uuid:pk>/delete/', views.ServiceDeleteView.as_view(), name='services.delete'),
+    path('search/', views.ServiceDocumentView.as_view({'get': 'list'}), name='services.search'),
     # path('delete/', views.delete, name='services.delete'),
 ]

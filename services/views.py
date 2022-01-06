@@ -4,7 +4,10 @@ from services.models import Service, ServiceRate, ServiceAttendance, ServiceAtte
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from services.forms import ServiceCreateForm
+from services.forms import ServiceCreateForm, ServiceUpdateForm
+from services.viewsets import ServiceDocumentViewSet
+from services.documents import ServiceDocument
+from services.serializers import ServiceDocumentSerializer
 
 
 class ServiceListView(ListView):
@@ -14,7 +17,7 @@ class ServiceListView(ListView):
 @method_decorator(never_cache, name='dispatch')
 class ServiceCreateView(LoginRequiredMixin, CreateView):
     form_class = ServiceCreateForm
-    template_name = 'services/service_form.html'
+    template_name = 'services/service_create.html'
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -27,19 +30,8 @@ class ServiceCreateView(LoginRequiredMixin, CreateView):
 @method_decorator(never_cache, name='dispatch')
 class ServiceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Service
-    fields = [
-        'title',
-        'description',
-        'location',
-        'start_date',
-        'end_date',
-        'repetition_term',
-        'privacy_status',
-        'participant_limit',
-        'participant_picking',
-        'content',
-        'cancelled',
-    ]
+    form_class = ServiceUpdateForm
+    template_name = 'services/service_edit.html'
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -62,3 +54,9 @@ class ServiceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class ServiceDetailView(DetailView):
     model = Service
+
+
+class ServiceDocumentView(ServiceDocumentViewSet):
+    document = ServiceDocument
+    serializer_class = ServiceDocumentSerializer
+

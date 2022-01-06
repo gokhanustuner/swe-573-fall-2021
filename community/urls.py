@@ -24,4 +24,6 @@ urlpatterns = [
     path('members/', include('members.urls')),
     path('services/', include('services.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('locations/', include('locations.urls')),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
+  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
