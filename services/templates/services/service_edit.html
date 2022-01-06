@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="{% static 'public/css/style.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
-        {% autoescape off %}
         document.addEventListener("DOMContentLoaded", function() {
             let form = document.getElementById('service-form');
             let previousQueryLength;
@@ -87,7 +86,6 @@
                 $('#service-form').submit();
             });
         });
-        {% endautoescape %}
     </script>
 </head>
 
