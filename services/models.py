@@ -1,12 +1,17 @@
 import uuid
+import json
 
+from django_mysql.models import Model as MySQLModel, DynamicField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from location_field.models.plain import PlainLocationField
 from django.urls import reverse
+from django_elasticsearch_dsl_drf.wrappers import dict_to_obj
 
 
 class Service(models.Model):
+
+    class Meta:
+        ordering = ['created_at']
 
     def __str__(self):
         return self.title
@@ -33,6 +38,17 @@ class Service(models.Model):
         NO = 0, _('No')
         YES = 1, _('Yes')
 
+    class ServiceCategory(models.IntegerChoices):
+        """Category options of a service"""
+        FOOD = 1, _('Food')
+        MUSIC = 2, _('Music')
+        EDUCATION = 3, _('Education')
+        ARTS = 4, _('Arts')
+        ENTERTAINMENT = 5, _('Entertainment')
+        TECHNICAL = 6, _('Technical')
+        CRAFTSMANSHIP = 7, _('Craftsmanship')
+        REPAIR_AND_MAINTENANCE = 8, _('Repair and maintenance')
+
     uuid = models.UUIDField(
         verbose_name=_('Service ID'),
         primary_key=True,
@@ -43,14 +59,14 @@ class Service(models.Model):
 
     title = models.CharField(verbose_name=_('Title'), max_length=500)
     description = models.TextField(verbose_name=_('Service description'))
-    location = PlainLocationField(based_fields=['city'], zoom=7)
+    location = models.TextField()
     owner = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Service owner')
     )
     start_date = models.DateTimeField(verbose_name=_('Start date'))
-    end_date = models.DateTimeField(verbose_name=_('End date'))
+    credit = models.PositiveIntegerField(verbose_name=_('Credit'))
     repetition_term = models.PositiveSmallIntegerField(
         verbose_name=_('Repetition term'),
         choices=ServiceRepetitionTerm.choices,
@@ -63,9 +79,14 @@ class Service(models.Model):
     )
     participant_limit = models.PositiveIntegerField(verbose_name=_('Participant limit'), default=0)
     participant_picking = models.PositiveSmallIntegerField(
-        verbose_name='Participant picking',
+        verbose_name=_('Participant picking'),
         choices=ServiceParticipantPicking.choices,
         default=ServiceParticipantPicking.FREE,
+    )
+    category = models.PositiveSmallIntegerField(
+        verbose_name=_('Service category'),
+        choices=ServiceCategory.choices,
+        default=ServiceCategory.FOOD,
     )
     content = models.TextField(verbose_name=_('Service content'))
     cancelled = models.BooleanField(
@@ -74,6 +95,7 @@ class Service(models.Model):
         choices=ServiceCancelled.choices,
         default=ServiceCancelled.NO,
     )
+    photo = models.ImageField(upload_to='services', blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -106,6 +128,35 @@ class Service(models.Model):
 
     def get_absolute_url(self):
         return reverse('services.detail', kwargs={'pk': self.pk})
+
+    def get_latitude(self):
+        payload = json.loads(str(self.location).replace("\\'", '"'))
+        return payload['geometry']['location']['lat']
+
+    def get_longitude(self):
+        payload = json.loads(str(self.location).replace("\\'", '"'))
+        return payload['geometry']['location']['lng']
+
+    @property
+    def coordinates_field_indexing(self):
+        """Location for indexing.
+
+        Used in Elasticsearch indexing/tests of `geo_distance` native filter.
+        """
+        return {
+            'lat': self.get_latitude(),
+            'lon': self.get_longitude(),
+        }
+
+    @property
+    def owner_indexing(self):
+        wrapper = dict_to_obj({
+            'id': self.owner.id,
+            'full_name': self.owner.full_name,
+            'credit': self.owner.credit,
+        })
+
+        return wrapper
 
 
 class ServiceAttendanceRequest(models.Model):
