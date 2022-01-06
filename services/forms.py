@@ -10,7 +10,7 @@ CATEGORY_CHOICES = (1, _('Food')), (2, _('Music')), (3, _('Education')), (4, _('
 
 
 class ServiceCreateForm(forms.ModelForm):
-
+  
     title = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',
     }))

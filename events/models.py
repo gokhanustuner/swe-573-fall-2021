@@ -42,7 +42,7 @@ class Event(models.Model):
 
     title = models.CharField(verbose_name=_('Title'), max_length=500)
     description = models.TextField(verbose_name=_('Description'))
-    location = PlainLocationField(based_fields=['city'], zoom=7)
+    location = models.CharField(max_length=63)
     owner = models.OneToOneField(
         'members.Member',
         on_delete=models.CASCADE,
@@ -72,6 +72,7 @@ class Event(models.Model):
         choices=EventCancelled.choices,
         default=EventCancelled.NO,
     )
+    photo = models.ImageField(upload_to='events', blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

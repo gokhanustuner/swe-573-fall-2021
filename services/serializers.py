@@ -23,4 +23,5 @@ class ServiceDocumentSerializer(DocumentSerializer):
             'owner',
             'coordinates',
             'location',
+            'coordinates'
         )

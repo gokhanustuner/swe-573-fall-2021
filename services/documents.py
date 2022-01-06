@@ -84,6 +84,7 @@ class ServiceDocument(Document):
                     'suggest': fields.Completion(),
                 }
             ),
+            'full_name': fields.TextField(),
             'credit': fields.IntegerField()
         }
     )

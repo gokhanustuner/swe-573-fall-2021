@@ -3,7 +3,7 @@ from django.db import models
 from location_field.models.plain import PlainLocationField
 from django.utils.translation import gettext_lazy as _
 
-MEMBER_DEFAULT_CREDIT = 20
+MEMBER_DEFAULT_CREDIT = 5
 
 
 class MemberManager(BaseUserManager):
