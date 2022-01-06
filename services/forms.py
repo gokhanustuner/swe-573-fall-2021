@@ -1,12 +1,16 @@
 from django import forms
 from .models import Service
+from django.utils.translation import gettext_lazy as _
+
+REPETITION_TERM_CHOICES = (1, 'One-Time'), (2, 'Weekly'), (3, 'Monthly'), (4, 'Yearly')
+PRIVACY_STATUS_CHOICES = (1, 'Public'), (2, 'Private')
+PARTICIPANT_PICKING_CHOICES = (1, 'Free'), (2, 'Pick participants')
+CATEGORY_CHOICES = (1, _('Food')), (2, _('Music')), (3, _('Education')), (4, _('Arts')), (5, _('Entertainment')), \
+                   (6, _('Technical')), (7, _('Craftsmanship')), (8, _('Repair and maintenance'))
 
 
 class ServiceCreateForm(forms.ModelForm):
-    REPETITION_TERM_CHOICES = (1, 'One-Time'), (2, 'Weekly'), (3, 'Monthly'), (4, 'Yearly')
-    PRIVACY_STATUS_CHOICES = (1, 'Public'), (2, 'Private')
-    PARTICIPANT_PICKING_CHOICES = (1, 'Free'), (2, 'Pick participants')
-
+  
     title = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',
     }))
@@ -28,6 +32,9 @@ class ServiceCreateForm(forms.ModelForm):
         'spellcheck': 'false',
     }))
     participant_limit = forms.IntegerField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+    }))
+    category = forms.ChoiceField(choices=CATEGORY_CHOICES, widget=forms.Select(attrs={
         'class': 'form-control',
     }))
     repetition_term = forms.ChoiceField(choices=REPETITION_TERM_CHOICES, widget=forms.Select(attrs={
@@ -55,6 +62,7 @@ class ServiceCreateForm(forms.ModelForm):
             'credit',
             'description',
             'participant_limit',
+            'category',
             'repetition_term',
             'privacy_status',
             'participant_picking',
@@ -63,9 +71,6 @@ class ServiceCreateForm(forms.ModelForm):
 
 
 class ServiceUpdateForm(forms.ModelForm):
-    REPETITION_TERM_CHOICES = (1, 'One-Time'), (2, 'Weekly'), (3, 'Monthly'), (4, 'Yearly')
-    PRIVACY_STATUS_CHOICES = (1, 'Public'), (2, 'Private')
-    PARTICIPANT_PICKING_CHOICES = (1, 'Free'), (2, 'Pick participants')
     CANCELLATION_CHOICES = (0, 'No'), (1, 'Yes')
 
     title = forms.CharField(widget=forms.TextInput(attrs={
@@ -89,6 +94,9 @@ class ServiceUpdateForm(forms.ModelForm):
         'spellcheck': 'false',
     }))
     participant_limit = forms.IntegerField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+    }))
+    category = forms.ChoiceField(choices=CATEGORY_CHOICES, widget=forms.Select(attrs={
         'class': 'form-control',
     }))
     repetition_term = forms.ChoiceField(choices=REPETITION_TERM_CHOICES, widget=forms.Select(attrs={
@@ -119,6 +127,7 @@ class ServiceUpdateForm(forms.ModelForm):
             'credit',
             'description',
             'participant_limit',
+            'category',
             'repetition_term',
             'privacy_status',
             'participant_picking',

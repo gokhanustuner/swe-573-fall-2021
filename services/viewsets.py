@@ -41,6 +41,8 @@ class ServiceDocumentViewSet(DocumentViewSet):
     # Define search fields
     search_fields = (
         'title',
+        'category',
+        'owner.full_name',
     )
     # Define filtering fields
     filter_fields = {

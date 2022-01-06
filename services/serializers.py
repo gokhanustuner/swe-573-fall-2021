@@ -15,10 +15,13 @@ class ServiceDocumentSerializer(DocumentSerializer):
             'privacy_status',
             'participant_limit',
             'participant_picking',
+            'category',
             'content',
             'cancelled',
             'photo',
             'created_at',
             'owner',
+            'coordinates',
+            'location',
             'coordinates'
         )

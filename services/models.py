@@ -38,6 +38,17 @@ class Service(models.Model):
         NO = 0, _('No')
         YES = 1, _('Yes')
 
+    class ServiceCategory(models.IntegerChoices):
+        """Category options of a service"""
+        FOOD = 1, _('Food')
+        MUSIC = 2, _('Music')
+        EDUCATION = 3, _('Education')
+        ARTS = 4, _('Arts')
+        ENTERTAINMENT = 5, _('Entertainment')
+        TECHNICAL = 6, _('Technical')
+        CRAFTSMANSHIP = 7, _('Craftsmanship')
+        REPAIR_AND_MAINTENANCE = 8, _('Repair and maintenance')
+
     uuid = models.UUIDField(
         verbose_name=_('Service ID'),
         primary_key=True,
@@ -68,9 +79,14 @@ class Service(models.Model):
     )
     participant_limit = models.PositiveIntegerField(verbose_name=_('Participant limit'), default=0)
     participant_picking = models.PositiveSmallIntegerField(
-        verbose_name='Participant picking',
+        verbose_name=_('Participant picking'),
         choices=ServiceParticipantPicking.choices,
         default=ServiceParticipantPicking.FREE,
+    )
+    category = models.PositiveSmallIntegerField(
+        verbose_name=_('Service category'),
+        choices=ServiceCategory.choices,
+        default=ServiceCategory.FOOD,
     )
     content = models.TextField(verbose_name=_('Service content'))
     cancelled = models.BooleanField(
@@ -134,10 +150,6 @@ class Service(models.Model):
 
     @property
     def owner_indexing(self):
-        """Owner data (nested) for indexing.
-
-        :return:
-        """
         wrapper = dict_to_obj({
             'id': self.owner.id,
             'full_name': self.owner.full_name,

@@ -59,6 +59,12 @@ class ServiceDocument(Document):
             'raw': KeywordField(),
         }
     )
+    category = StringField(
+        analyzer=html_strip,
+        fields={
+            'raw': KeywordField(),
+        }
+    )
     content = fields.TextField()
     cancelled = StringField(
         analyzer=html_strip,
@@ -72,6 +78,12 @@ class ServiceDocument(Document):
     owner = fields.ObjectField(
         properties={
             'id': fields.IntegerField(),
+            'full_name': StringField(
+                fields={
+                    'raw': KeywordField(),
+                    'suggest': fields.Completion(),
+                }
+            ),
             'full_name': fields.TextField(),
             'credit': fields.IntegerField()
         }
