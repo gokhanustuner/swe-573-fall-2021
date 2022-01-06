@@ -64,7 +64,7 @@ class ServiceDocumentViewSet(DocumentViewSet):
     """
     # Define geo-spatial filtering fields
     geo_spatial_filter_fields = {
-        'location': {
+        'coordinates': {
             'lookups': [
                 LOOKUP_FILTER_GEO_BOUNDING_BOX,
                 LOOKUP_FILTER_GEO_DISTANCE,
@@ -83,7 +83,7 @@ class ServiceDocumentViewSet(DocumentViewSet):
     }
     # Define ordering fields
     geo_spatial_ordering_fields = {
-        'location': None,
+        'coordinates': None,
     }
     # Specify default ordering
     ordering = (

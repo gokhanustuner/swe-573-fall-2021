@@ -20,5 +20,5 @@ class ServiceDocumentSerializer(DocumentSerializer):
             'photo',
             'created_at',
             'owner',
-            'location'
+            'coordinates'
         )

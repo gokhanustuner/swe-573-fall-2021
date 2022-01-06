@@ -76,9 +76,9 @@ class ServiceDocument(Document):
             'credit': fields.IntegerField()
         }
     )
-
+    location = fields.TextField()
     # Location
-    location = fields.GeoPointField(attr='location_field_indexing')
+    coordinates = fields.GeoPointField(attr='coordinates_field_indexing')
 
     class Django:
         """Meta options."""

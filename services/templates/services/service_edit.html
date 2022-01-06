@@ -13,7 +13,82 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'public/images/favicon.png' %}">
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="{% static 'public/css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript">
+        {% autoescape off %}
+        document.addEventListener("DOMContentLoaded", function() {
+            let form = document.getElementById('service-form');
+            let previousQueryLength;
+            let parsedJSON = JSON.parse($('#location-json').val());
+            $('#location').css('background-image', 'url("' + parsedJSON.icon + '")');
+            $('#location').css('background-repeat', 'no-repeat');
+            $('#location').css('background-position', '98% center');
+            $('#location').css('background-size', '5%');
+            $('#location').val(parsedJSON.formatted_address);
+            $('#location-wrapper').css('display', 'none');
 
+            form.addEventListener('keyup', function(event) {
+                event.preventDefault()
+
+                let locationQuery = document.getElementById('location').value;
+                if (locationQuery.length >= 2 && locationQuery.length < 15 && previousQueryLength !== locationQuery.length) {
+                    let request = axios.get('/locations/search/?query=' + locationQuery)
+                        .then(function (response) {
+                            $('#location-wrapper .list-group-item').remove();
+                            for (let x = 0; x < response.data.response.results.length; x++) {
+                                let newLi = document.createElement('li');
+                                let newDiv1 = document.createElement('div');
+                                let newDiv2 = document.createElement('div');
+                                let newSpan = document.createElement('span');
+
+                                $(newLi).addClass('list-group-item d-flex justify-content-between align-items-start location');
+                                $(newLi).attr('id', 'location-' + x);
+                                $(newDiv1).addClass('ms-2 me-auto');
+                                $(newLi).css('background-image', 'url("' + response.data.response.results[x].icon + '")');
+                                $(newLi).css('background-repeat', 'no-repeat');
+                                $(newLi).css('background-position', '98% center');
+                                $(newLi).css('background-size', '5%');
+                                $(newLi).css('cursor', 'pointer');
+                                $(newDiv2).addClass('fw-bold');
+                                $(newDiv2).html(response.data.response.results[x].name);
+                                $(newSpan).addClass('badge bg-primary rounded-pill');
+                                $(newDiv1).html(newDiv2.outerHTML + response.data.response.results[x].formatted_address);
+                                $(newLi).append(newDiv1);
+                                $(newLi).append(newSpan);
+                                $('#location-wrapper').css('display', 'flex');
+                                $('#location-wrapper').append(newLi);
+                            }
+
+                            $('.location').click(function() {
+                                let resultIndex = $(this).attr('id').split('-')[1]
+                                $('#location-json').val(JSON.stringify(response.data.response.results[resultIndex]));
+                                $('#location').css('background-image', 'url("' + response.data.response.results[resultIndex].icon + '")');
+                                $('#location').css('background-repeat', 'no-repeat');
+                                $('#location').css('background-position', '98% center');
+                                $('#location').css('background-size', '5%');
+                                $('#location').val(response.data.response.results[resultIndex].formatted_address);
+                                $('#location-wrapper').css('display', 'none');
+                            });
+                            request = null;
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            console.log(error);
+                        }).then(function () {
+                            previousQueryLength = locationQuery.length
+                        })
+                }
+            })
+
+
+            $('#submit-button').click(function (event) {
+                event.preventDefault();
+                $('#location').val($('#location-json').val());
+                $('#service-form').submit();
+            });
+        });
+        {% endautoescape %}
+    </script>
 </head>
 
 <body class="color-theme-blue mont-font">
@@ -256,8 +331,17 @@
                                                     {{ form.location.errors.0|escape }}
                                                 </div>
                                             {% endif %}
+                                            <input type="hidden" value="{{ object.location }}" name="location-json" id="location-json">
                                         </div>
                                     </div>
+
+                                    <ol class="list-group list-group-numbered" id="location-wrapper" style="
+                                        display: none;
+                                        position: relative;
+                                        background-color: rgb(255, 255, 255);
+                                        margin-top: -1rem;
+                                        padding-left: calc(var(--bs-gutter-x) / 2);
+                                        margin-bottom: 1rem;"></ol>
                                 </div>
 
                                 <div class="row">
@@ -389,7 +473,7 @@
                                     </div>-->
 
                                     <div class="col-lg-12">
-                                        <a onclick="document.getElementById('service-form').submit()" class="bg-current text-center text-white font-xsss fw-600 p-3 w175 rounded-3 d-inline-block">Save</a>
+                                        <a id="submit-button" class="bg-current text-center text-white font-xsss fw-600 p-3 w175 rounded-3 d-inline-block">Save</a>
                                     </div>
                                 </div>
 

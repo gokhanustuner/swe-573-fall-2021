@@ -122,7 +122,7 @@ class Service(models.Model):
         return payload['geometry']['location']['lng']
 
     @property
-    def location_field_indexing(self):
+    def coordinates_field_indexing(self):
         """Location for indexing.
 
         Used in Elasticsearch indexing/tests of `geo_distance` native filter.
