@@ -137,6 +137,14 @@ class Service(models.Model):
         payload = json.loads(str(self.location).replace("\\'", '"'))
         return payload['geometry']['location']['lng']
 
+    def get_formatted_address(self):
+        payload = json.loads(str(self.location).replace("\\'", '"'))
+        return payload['formatted_address']
+
+    def get_location_type_icon(self):
+        payload = json.loads(str(self.location).replace("\\'", '"'))
+        return payload['icon']
+
     @property
     def coordinates_field_indexing(self):
         """Location for indexing.
@@ -147,6 +155,14 @@ class Service(models.Model):
             'lat': self.get_latitude(),
             'lon': self.get_longitude(),
         }
+
+    @property
+    def formatted_address_field_indexing(self):
+        return self.get_formatted_address()
+
+    @property
+    def location_type_icon_field_indexing(self):
+        return self.get_location_type_icon()
 
     @property
     def owner_indexing(self):
