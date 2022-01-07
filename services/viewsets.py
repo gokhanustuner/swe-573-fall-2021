@@ -43,6 +43,7 @@ class ServiceDocumentViewSet(DocumentViewSet):
         'title',
         'category',
         'owner.full_name',
+        'full_address',
     )
     # Define filtering fields
     filter_fields = {

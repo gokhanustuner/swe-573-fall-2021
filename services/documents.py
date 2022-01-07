@@ -89,7 +89,14 @@ class ServiceDocument(Document):
         }
     )
     location = fields.TextField()
-    # Location
+    # Formatted address
+    formatted_address = StringField(
+        attr='formatted_address_field_indexing',
+        fields={
+            'raw': KeywordField(),
+        }
+    )
+    location_type_icon = StringField(attr='location_type_icon_field_indexing')
     coordinates = fields.GeoPointField(attr='coordinates_field_indexing')
 
     class Django:
@@ -103,8 +110,8 @@ class ServiceDocument(Document):
             'owner'
         )
 
+    """
     def get_instances_from_related(self, related_instance):
         if isinstance(related_instance, Member):
             return related_instance.memberprofile.all()
-
-
+    """

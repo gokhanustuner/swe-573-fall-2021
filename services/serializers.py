@@ -23,5 +23,7 @@ class ServiceDocumentSerializer(DocumentSerializer):
             'owner',
             'coordinates',
             'location',
-            'coordinates'
+            'coordinates',
+            'formatted_address',
+            'location_type_icon',
         )
