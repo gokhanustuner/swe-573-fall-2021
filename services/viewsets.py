@@ -18,8 +18,12 @@ from django_elasticsearch_dsl_drf.filter_backends import (
 from django_elasticsearch_dsl_drf.pagination import LimitOffsetPagination
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
-from .documents import ServiceDocument
-from .serializers import ServiceDocumentSerializer
+from .documents import ServiceDocument, ServiceAttendanceDocument, ServiceAttendanceRequestDocument
+from .serializers import (
+    ServiceDocumentSerializer,
+    ServiceAttendanceDocumentSerializer,
+    ServiceAttendanceRequestDocumentSerializer,
+)
 
 
 class ServiceDocumentViewSet(DocumentViewSet):
@@ -44,6 +48,7 @@ class ServiceDocumentViewSet(DocumentViewSet):
         'category',
         'owner.full_name',
         'full_address',
+        'category_name',
     )
     # Define filtering fields
     filter_fields = {
@@ -80,6 +85,7 @@ class ServiceDocumentViewSet(DocumentViewSet):
     ordering_fields = {
         # 'id': None,
         'created_at': None,
+        'start_date': None,
         # 'city': 'city.name.raw',
         # 'country': 'city.country.name.raw',
         # 'zip_code': None,
@@ -131,4 +137,30 @@ class ServiceDocumentViewSet(DocumentViewSet):
         #     'field': 'city.country.name.raw',
         #     'enabled': True,
         # },
+    }
+
+
+class ServiceAttendanceDocumentViewSet(DocumentViewSet):
+    document = ServiceAttendanceDocument
+    serializer_class = ServiceAttendanceDocumentSerializer
+    lookup_field = 'uuid'
+
+    # Define filtering fields
+    filter_fields = {
+        # 'id': None,
+        'service_id': 'service.id',
+        # 'title': 'city.name.raw',
+    }
+
+
+class ServiceAttendanceRequestDocumentViewSet(DocumentViewSet):
+    document = ServiceAttendanceRequestDocument
+    serializer_class = ServiceAttendanceRequestDocumentSerializer
+    lookup_field = 'uuid'
+
+    # Define filtering fields
+    filter_fields = {
+        # 'id': None,
+        'service_id': 'service.id',
+        # 'title': 'city.name.raw',
     }

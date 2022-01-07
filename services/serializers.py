@@ -1,5 +1,5 @@
 from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
-from services.documents import ServiceDocument
+from services.documents import ServiceDocument, ServiceAttendanceDocument, ServiceAttendanceRequestDocument
 
 
 class ServiceDocumentSerializer(DocumentSerializer):
@@ -26,4 +26,29 @@ class ServiceDocumentSerializer(DocumentSerializer):
             'coordinates',
             'formatted_address',
             'location_type_icon',
+            'category_name',
+        )
+
+
+class ServiceAttendanceDocumentSerializer(DocumentSerializer):
+    class Meta:
+        document = ServiceAttendanceDocument
+        fields = (
+            'uuid',
+            'member',
+            'owner',
+            'service',
+            'status',
+        )
+
+
+class ServiceAttendanceRequestDocumentSerializer(DocumentSerializer):
+    class Meta:
+        document = ServiceAttendanceRequestDocument
+        fields = (
+            'uuid',
+            'member',
+            'owner',
+            'service',
+            'status',
         )
