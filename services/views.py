@@ -1,5 +1,7 @@
+import json
 from django.shortcuts import render
-from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, ListView
+from django.http import HttpResponseNotFound, JsonResponse
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from services.models import Service, ServiceRate, ServiceAttendance, ServiceAttendanceRequest
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.decorators import method_decorator
@@ -8,6 +10,9 @@ from services.forms import ServiceCreateForm, ServiceUpdateForm
 from services.viewsets import ServiceDocumentViewSet
 from services.documents import ServiceDocument
 from services.serializers import ServiceDocumentSerializer
+from django.contrib.auth.decorators import login_required
+from members.models import Member
+from django.views.decorators.cache import never_cache
 
 
 class ServiceListView(ListView):
@@ -52,8 +57,53 @@ class ServiceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return service.owner == self.request.user
 
 
-class ServiceDetailView(DetailView):
-    model = Service
+# authentication required
+def service_detail(request, pk):
+    try:
+        services = ServiceDocument.search().filter('match_phrase', uuid=pk)
+    except Service.DoesNotExist:
+        raise Service.DoesNotExist('Poll does not exist')
+
+    return render(request, 'services/service_detail.html', {'services': services})
+
+
+@never_cache
+@login_required
+def attend_to_service(request):
+    request_data = json.loads(request.body)
+    service = Service.objects.get(pk=request_data['service_id'])
+    status = None
+    member = Member.objects.get(pk=request.user.pk)
+
+    if service.participant_picking == 2:
+        service_attendance_request = ServiceAttendanceRequest(
+            member=request.user,
+            service=service,
+            owner=service.owner,
+        )
+        service_attendance_request.save()
+        status = 'waiting'
+
+    elif service.participant_picking == 1:
+        service_attendance = ServiceAttendance(
+            member=request.user,
+            service=service,
+            owner=service.owner,
+        )
+
+        service_attendance.member.credit -= service.credit
+        service_attendance.save()
+        member = Member.objects.get(pk=request.user.pk)
+        member.credit -= service.credit
+        member.save()
+        status = 'approved'
+    else:
+        raise Exception
+
+    return JsonResponse({
+        'status': status,
+        'credit': member.credit,
+    })
 
 
 class ServiceDocumentView(ServiceDocumentViewSet):

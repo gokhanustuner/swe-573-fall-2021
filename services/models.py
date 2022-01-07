@@ -9,6 +9,9 @@ from django_elasticsearch_dsl_drf.wrappers import dict_to_obj
 
 
 class Service(models.Model):
+    CATEGORY_CHOICES = (1, _('Food')), (2, _('Music')), (3, _('Education')), (4, _('Arts')), (9, _('Sports')), \
+                       (5, _('Entertainment')), (6, _('Technical')), (7, _('Craftsmanship')), \
+                       (8, _('Repair and maintenance'))
 
     class Meta:
         ordering = ['created_at']
@@ -47,7 +50,8 @@ class Service(models.Model):
         ENTERTAINMENT = 5, _('Entertainment')
         TECHNICAL = 6, _('Technical')
         CRAFTSMANSHIP = 7, _('Craftsmanship')
-        REPAIR_AND_MAINTENANCE = 8, _('Repair and maintenance')
+        REPAIR_AND_MAINTENANCE = 8, _('Repair and maintenance'),
+        SPORTS = 9, _('Sports')
 
     uuid = models.UUIDField(
         verbose_name=_('Service ID'),
@@ -165,9 +169,13 @@ class Service(models.Model):
         return self.get_location_type_icon()
 
     @property
+    def category_name_field_indexing(self):
+        return list(filter(lambda x: x[0] == 2, self.CATEGORY_CHOICES))[0][1]
+
+    @property
     def owner_indexing(self):
         wrapper = dict_to_obj({
-            'id': self.owner.id,
+            'id': self.owner.pk,
             'full_name': self.owner.full_name,
             'credit': self.owner.credit,
         })
@@ -176,6 +184,9 @@ class Service(models.Model):
 
 
 class ServiceAttendanceRequest(models.Model):
+
+    class Meta:
+        ordering = ['created_at']
 
     class ServiceAttendanceRequestStatus(models.IntegerChoices):
         """Approval status options of a service request"""
@@ -190,15 +201,23 @@ class ServiceAttendanceRequest(models.Model):
         editable=False,
         unique=True,
     )
-    member = models.OneToOneField(
+    member = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,
-        verbose_name=_('Member requesting to attend to the service')
+        verbose_name=_('Member requesting to attend to the service'),
+        related_name='member_requested'
     )
-    service = models.OneToOneField(
+    service = models.ForeignKey(
         'Service',
         on_delete=models.CASCADE,
         verbose_name=_('Service requested to attend')
+    )
+    owner = models.ForeignKey(
+        'members.Member',
+        on_delete=models.CASCADE,
+        verbose_name=_('Member to approve'),
+        related_name='owner',
+        default=None
     )
     status = models.PositiveSmallIntegerField(
         verbose_name=_('Service attendance request status'),
@@ -206,6 +225,35 @@ class ServiceAttendanceRequest(models.Model):
         default=ServiceAttendanceRequestStatus.WAITING_FOR_APPROVAL,
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def owner_indexing(self):
+        wrapper = dict_to_obj({
+            'id': self.owner.pk,
+            'full_name': self.owner.full_name,
+            'credit': self.owner.credit,
+        })
+
+        return wrapper
+
+    @property
+    def member_indexing(self):
+        wrapper = dict_to_obj({
+            'id': self.member.pk,
+            'full_name': self.member.full_name,
+            'credit': self.member.credit,
+        })
+
+        return wrapper
+
+    @property
+    def service_indexing(self):
+        wrapper = dict_to_obj({
+            'uuid': self.service.pk,
+            'title': self.service.title,
+        })
+
+        return wrapper
 
 
 class ServiceAttendance(models.Model):
@@ -223,23 +271,61 @@ class ServiceAttendance(models.Model):
         unique=True,
     )
 
-    member = models.OneToOneField(
+    member = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,
-        verbose_name=_('Member attending to the service')
+        verbose_name=_('Member attending to the service'),
+        related_name='member_attending'
     )
 
-    service = models.OneToOneField(
+    service = models.ForeignKey(
         'Service',
         on_delete=models.CASCADE,
         verbose_name=_('Attended service')
     )
+
+    owner = models.ForeignKey(
+        'members.Member',
+        on_delete=models.CASCADE,
+        verbose_name=_('Member to approve'),
+        related_name='attendance_owner',
+        default=None
+    )
+
     status = models.PositiveSmallIntegerField(
         verbose_name=_('Service attendance status'),
         choices=ServiceAttendanceStatus.choices,
         default=ServiceAttendanceStatus.ACTIVE,
     )
-    date = models.DateTimeField(verbose_name=_('Start date'))
+
+    @property
+    def owner_indexing(self):
+        wrapper = dict_to_obj({
+            'id': self.owner.pk,
+            'full_name': self.owner.full_name,
+            'credit': self.owner.credit,
+        })
+
+        return wrapper
+
+    @property
+    def member_indexing(self):
+        wrapper = dict_to_obj({
+            'id': self.member.pk,
+            'full_name': self.member.full_name,
+            'credit': self.member.credit,
+        })
+
+        return wrapper
+
+    @property
+    def service_indexing(self):
+        wrapper = dict_to_obj({
+            'uuid': self.service.pk,
+            'title': self.service.title,
+        })
+
+        return wrapper
 
 
 class ServiceRate(models.Model):
@@ -260,7 +346,7 @@ class ServiceRate(models.Model):
     voter = models.OneToOneField(
         'members.Member',
         on_delete=models.CASCADE,
-        verbose_name=_('Member attending to the service')
+        verbose_name=_('Member attending to the service'),
     )
     service = models.OneToOneField(
         'Service',
