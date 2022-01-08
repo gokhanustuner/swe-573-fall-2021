@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Community - Social Network App HTML Template </title>
+    <title>Community - World's Greatest People Platform </title>
 
     <link rel="stylesheet" href="{%  static 'public/css/themify-icons.css' %}">
     <link rel="stylesheet" href="{% static 'public/css/feather.css' %}">
@@ -159,7 +159,7 @@
                     <input type="hidden" value="" name="service-uuid" id="service-uuid">
                 </div>
             </form>
-            <a href="default.html" class="p-2 text-center ms-3 menu-icon center-menu-icon"><i class="feather-home font-lg alert-primary btn-round-lg theme-dark-bg text-current "></i></a>
+            <a href="{% url 'home.feed' %}" class="p-2 text-center ms-3 menu-icon center-menu-icon"><i class="feather-home font-lg alert-primary btn-round-lg theme-dark-bg text-current "></i></a>
             <a href="default-storie.html" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-zap font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
             <a href="default-video.html" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-video font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
             <a href="default-group.html" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-user font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
@@ -457,7 +457,7 @@
                                     <div class="card-body p-0 me-lg-5">
                                         <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">{{ service.description }}</p>
                                         <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">
-                                            <a style="padding: 0 !important; " href="#" class="p-2 text-center ms-0 menu-icon center-menu-icon">
+                                            <a href="{% url 'services.attendants' service.uuid %}" style="padding: 0 !important; " href="#" class="p-2 text-center ms-0 menu-icon center-menu-icon">
                                                 <i class="feather-user font-xs bg-greylight btn-round-xs theme-dark-bg text-grey-500 "></i>
                                             </a>
                                             {% if all_attendance.count > 0 %}

@@ -19,6 +19,7 @@ from elasticsearch_dsl.query import Q
 from functools import reduce
 import operator
 
+
 class ServiceListView(ListView):
     pass
 
@@ -168,6 +169,24 @@ def cancel_service_attendance(request):
     return JsonResponse({
         'status': status,
         'credit': member.credit,
+    })
+
+
+def service_attendants(request, pk):
+    service_search = ServiceDocument.search().filter('match_phrase', uuid=pk)
+    service = next(service_search.__iter__())
+    all_attendance = ServiceAttendanceDocument.search().filter(
+        'nested',
+        path='service',
+        query=Q(
+            'match',
+            service__uuid=pk,
+        ),
+    )
+
+    return render(request, 'services/service_attendants.html', {
+        'service': service,
+        'all_attendance': all_attendance,
     })
 
 
