@@ -1,7 +1,7 @@
 name: Build Docker Image and Beanstalk Deploy
 
 on:
-  push:
+  create:
     tags:
       - .*
 
