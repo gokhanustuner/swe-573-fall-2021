@@ -1,13 +1,14 @@
 from django_elasticsearch_dsl import Document, Index, fields
 from django_elasticsearch_dsl_drf.compat import KeywordField, StringField
 from elasticsearch_dsl import analyzer
-from services.models import Service, ServiceAttendance, ServiceAttendanceRequest
+from services.models import Service, ServiceAttendance, ServiceAttendanceRequest, ServiceRate
 from members.models import Member
 
 # Name of the Elasticsearch index
 SERVICE_INDEX = Index('services')
 SERVICE_ATTENDANCE_INDEX = Index('service_attendance')
 SERVICE_ATTENDANCE_REQUEST_INDEX = Index('service_attendance_requests')
+SERVICE_RATE_INDEX = Index('service_rates')
 
 SERVICE_INDEX.settings(
     number_of_shards=1,
@@ -20,6 +21,11 @@ SERVICE_ATTENDANCE_INDEX.settings(
 )
 
 SERVICE_ATTENDANCE_REQUEST_INDEX.settings(
+    number_of_shards=1,
+    number_of_replicas=0,
+)
+
+SERVICE_RATE_INDEX.settings(
     number_of_shards=1,
     number_of_replicas=0,
 )
@@ -236,6 +242,43 @@ class ServiceAttendanceRequestDocument(Document):
     class Django:
         """Meta options."""
         model = ServiceAttendanceRequest  # The model associate with this Document
+
+        related_models = [Member, Service]
+
+    def get_instances_from_related(self, related_instance):
+        pass
+
+
+@SERVICE_RATE_INDEX.doc_type
+class ServiceRateDocument(Document):
+    uuid = StringField(
+        fields={
+            'raw': KeywordField(),
+        },
+    )
+
+    voter = fields.NestedField(
+        properties={
+            'id': fields.IntegerField(),
+            'full_name': StringField(),
+            'credit': fields.IntegerField()
+        }, include_in_root=True
+    )
+
+    service = fields.NestedField(
+        properties={
+            'uuid': StringField(),
+            'title': StringField(),
+        }, include_in_root=True
+    )
+
+    rate = fields.IntegerField()
+    content = fields.TextField()
+    created_at = fields.DateField()
+
+    class Django:
+        """Meta options."""
+        model = ServiceRate  # The model associate with this Document
 
         related_models = [Member, Service]
 

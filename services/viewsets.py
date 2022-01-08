@@ -18,11 +18,17 @@ from django_elasticsearch_dsl_drf.filter_backends import (
 from django_elasticsearch_dsl_drf.pagination import LimitOffsetPagination
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
-from .documents import ServiceDocument, ServiceAttendanceDocument, ServiceAttendanceRequestDocument
+from .documents import (
+    ServiceDocument,
+    ServiceAttendanceDocument,
+    ServiceAttendanceRequestDocument,
+    ServiceRateDocument
+)
 from .serializers import (
     ServiceDocumentSerializer,
     ServiceAttendanceDocumentSerializer,
     ServiceAttendanceRequestDocumentSerializer,
+    ServiceRateDocumentSerializer
 )
 
 
@@ -167,6 +173,24 @@ class ServiceAttendanceRequestDocumentViewSet(DocumentViewSet):
     filter_fields = {
         # 'id': None,
         'member_id': 'member.id',
+        'service_id': 'service.id',
+        # 'title': 'city.name.raw',
+    }
+
+    ordering_fields = {
+        'created_at': None,
+    }
+
+
+class ServiceRateDocumentViewSet(DocumentViewSet):
+    document = ServiceRateDocument
+    serializer_class = ServiceDocumentSerializer
+    lookup_field = 'uuid'
+
+    # Define filtering fields
+    filter_fields = {
+        # 'id': None,
+        'voter_id': 'voter.id',
         'service_id': 'service.id',
         # 'title': 'city.name.raw',
     }

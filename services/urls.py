@@ -11,5 +11,6 @@ urlpatterns = [
     path('search/', views.ServiceDocumentView.as_view({'get': 'list'}), name='services.search'),
     path('attend/', views.attend_to_service, name='services.attend'),
     path('cancel/', views.cancel_service_attendance, name='services.cancel_attendance'),
+    path('rate/', views.rate, name='services.rate'),
     # path('delete/', views.delete, name='services.delete'),
 ]
