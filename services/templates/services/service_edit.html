@@ -16,6 +16,55 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
+            let searchBar = document.getElementById('search-bar');
+            let previousSearchQueryLength;
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+            searchBar.addEventListener('keyup', function(event) {
+                event.preventDefault()
+                let query = $('#search-bar').val();
+                if (query.length >= 3 && previousSearchQueryLength !== query.length) {
+                    let request = axios.get('/services/search/?search=' + query)
+                        .then(function (response) {
+                            $('#search-wrapper .list-group-item').remove();
+                            for (let x = 0; x < response.data.length; x++) {
+                                let dateObj = new Date(response.data[x].start_date);
+                                let newLi = document.createElement('li');
+                                let newDiv1 = document.createElement('div');
+                                let newDiv2 = document.createElement('div');
+                                let newSpan = document.createElement('span');
+
+                                $(newLi).addClass('list-group-item d-flex justify-content-between align-items-start service-item');
+                                $(newLi).attr('id', 'service-' + x);
+                                $(newDiv1).addClass('ms-2 me-auto');
+                                $(newLi).css('cursor', 'pointer');
+                                $(newDiv2).addClass('fw-bold');
+                                $(newDiv2).html(response.data[x].title);
+                                $(newSpan).addClass('badge bg-primary rounded-pill');
+                                $(newDiv1).html(
+                                    newDiv2.outerHTML + response.data[x].owner.full_name + ' ' + dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString()
+                                );
+                                $(newLi).append(newDiv1);
+                                $(newLi).append(newSpan);
+                                $('#search-wrapper').css('display', 'flex');
+                                $('#search-wrapper').append(newLi);
+                            }
+
+                            $('.service-item').click(function() {
+                                let resultIndex = $(this).attr('id').split('-')[1];
+                                window.top.location.href = '/services/' + response.data[resultIndex].uuid;
+                            });
+                            request = null;
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            console.log(error);
+                        }).then(function () {
+                            previousSearchQueryLength = query.length
+                        })
+                }
+            })
+
             let form = document.getElementById('service-form');
             let previousQueryLength;
             let parsedJSON = JSON.parse($('#location-json').val());
@@ -107,7 +156,7 @@
         <!-- navigation top-->
         <div class="nav-header bg-white shadow-xs border-0">
             <div class="nav-top">
-                <a href="{% url 'members.home' %}"><i class="feather-zap text-success display1-size me-2 ms-0"></i><span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0">Community. </span> </a>
+                <a href="{% url 'home.feed' %}"><i class="feather-zap text-success display1-size me-2 ms-0"></i><span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0">Community. </span> </a>
                 <a href="#" class="mob-menu ms-auto me-2 chat-active-btn"><i class="feather-message-circle text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
                 <a href="default-video.html" class="mob-menu me-2"><i class="feather-video text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
                 <a href="#" class="me-2 menu-search-icon mob-menu"><i class="feather-search text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
@@ -117,7 +166,16 @@
             <form action="#" class="float-left header-search">
                 <div class="form-group mb-0 icon-input">
                     <i class="feather-search font-sm text-grey-400"></i>
-                    <input type="text" placeholder="Start typing to search.." class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xssss fw-500 rounded-xl w350 theme-dark-bg">
+                    <input id="search-bar" type="text" placeholder="Start typing to search.." class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xssss fw-500 rounded-xl w350 theme-dark-bg">
+                    <ol class="list-group" id="search-wrapper" style="
+                                        display: none;
+                                        position: absolute;
+                                        background-color: rgb(255, 255, 255);
+                                        margin-top: 0;
+                                        padding-left: calc(var(--bs-gutter-x) / 2);
+                                        margin-bottom: 1rem;
+                                        width: 100%;"></ol>
+                    <input type="hidden" value="" name="service-uuid" id="service-uuid">
                 </div>
             </form>
 
@@ -252,7 +310,7 @@
             </div>
             
 
-            <a href="default-settings.html" class="p-0 ms-3 menu-icon"><img src="https://via.placeholder.com/50x50.png" alt="user" class="w40 mt--1"></a>
+            <a href="{% url 'members.settings' user.pk %}" class="p-0 ms-3 menu-icon"><img src="https://via.placeholder.com/50x50.png" alt="user" class="w40 mt--1"></a>
             
         </div>
         <!-- navigation top -->
@@ -265,7 +323,7 @@
                         <div class="nav-caption fw-600 font-xssss text-grey-500"><span>New </span>Feeds</div>
                         <ul class="mb-1 top-content">
                             <li class="logo d-none d-xl-block d-lg-block"></li>
-                            <li><a href="{% url 'members.home' %}" class="nav-content-bttn open-font" ><i class="feather-tv btn-round-md bg-blue-gradiant me-3"></i><span>Newsfeed</span></a></li>
+                            <li><a href="{% url 'home.feed' %}" class="nav-content-bttn open-font" ><i class="feather-tv btn-round-md bg-blue-gradiant me-3"></i><span>Newsfeed</span></a></li>
                             <li><a href="default-badge.html" class="nav-content-bttn open-font" ><i class="feather-award btn-round-md bg-red-gradiant me-3"></i><span>Badges</span></a></li>
                             <li><a href="default-group.html" class="nav-content-bttn open-font" ><i class="feather-zap btn-round-md bg-mini-gradiant me-3"></i><span>Popular Events</span></a></li>
                             <li><a href="{% url 'members.show' user.pk %}" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Member Profile</span></a></li>
@@ -284,7 +342,7 @@
                         <div class="nav-caption fw-600 font-xssss text-grey-500"><span></span> Account</div>
                         <ul class="mb-1">
                             <li class="logo d-none d-xl-block d-lg-block"></li>
-                            <li><a href="default-settings.html" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-settings me-3 text-grey-500"></i><span>Settings</span></a></li>
+                            <li><a href="{% url 'members.settings' user.pk %}" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-settings me-3 text-grey-500"></i><span>Settings</span></a></li>
                             <li><a href="default-analytics.html" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-pie-chart me-3 text-grey-500"></i><span>Analytics</span></a></li>
                         </ul>
                     </div>
@@ -300,7 +358,7 @@
                     <div class="middle-wrap">
                         <div class="card w-100 border-0 bg-white shadow-xs p-0 mb-4">
                             <div class="card-body p-4 w-100 bg-current border-0 d-flex rounded-3">
-                                <a href="default-settings.html" class="d-inline-block mt-2"><i class="ti-arrow-left font-sm text-white"></i></a>
+                                <a href="{% url 'members.settings' user.pk %}" class="d-inline-block mt-2"><i class="ti-arrow-left font-sm text-white"></i></a>
                                 <h4 class="font-xs text-white fw-600 ms-4 mb-0 mt-2">Edit Service</h4>
                             </div>
                             <div class="card-body p-lg-5 p-4 w-100 border-0 ">
@@ -444,13 +502,25 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-12 mb-3">
+                                    <div class="col-lg-6 mb-3">
                                         <div class="form-group">
                                             <label class="mont-font fw-600 font-xsss">Category</label>
                                             {{ form.category }}
                                             {% if form.errors %}
                                                 <div class="invalid-feedback">
                                                     {{ form.category.errors.0|escape }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="form-group">
+                                            <label class="mont-font fw-600 font-xsss">Delivered</label>
+                                            {{ form.delivered }}
+                                            {% if form.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ form.delivered.errors.0|escape }}
                                                 </div>
                                             {% endif %}
                                         </div>
@@ -668,11 +738,11 @@
         <!-- right chat -->
         
         <div class="app-footer border-0 shadow-lg bg-primary-gradiant">
-            <a href="default.html" class="nav-content-bttn nav-center"><i class="feather-home"></i></a>
+            <a href="{% url 'home.feed' %}" class="nav-content-bttn nav-center"><i class="feather-home"></i></a>
             <a href="default-video.html" class="nav-content-bttn"><i class="feather-package"></i></a>
             <a href="default-live-stream.html" class="nav-content-bttn" data-tab="chats"><i class="feather-layout"></i></a>            
             <a href="shop-2.html" class="nav-content-bttn"><i class="feather-layers"></i></a>
-            <a href="default-settings.html" class="nav-content-bttn"><img src="https://via.placeholder.com/50x50.png" alt="user" class="w30 shadow-xss"></a>
+            <a href="{% url 'members.settings' user.pk %}" class="nav-content-bttn"><img src="https://via.placeholder.com/50x50.png" alt="user" class="w30 shadow-xss"></a>
         </div>
 
         <div class="app-header-search">

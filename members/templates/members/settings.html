@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Community - World's Greatest People Platform</title>
+    <title>Community - World's Greatest People Platform </title>
 
     <link rel="stylesheet" href="{% static 'public/css/themify-icons.css' %}">
     <link rel="stylesheet" href="{% static 'public/css/feather.css' %}">
@@ -17,13 +17,13 @@
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
             let searchBar = document.getElementById('search-bar');
-            let previousSearchQueryLength;
+            let previousQueryLength;
             const monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"];
             searchBar.addEventListener('keyup', function(event) {
                 event.preventDefault()
                 let query = $('#search-bar').val();
-                if (query.length >= 3 && previousSearchQueryLength !== query.length) {
+                if (query.length >= 3 && previousQueryLength !== query.length) {
                     let request = axios.get('/services/search/?search=' + query)
                         .then(function (response) {
                             $('#search-wrapper .list-group-item').remove();
@@ -60,71 +60,10 @@
                             // handle error
                             console.log(error);
                         }).then(function () {
-                            previousSearchQueryLength = query.length
+                            previousQueryLength = query.length
                         })
                 }
             })
-
-            let form = document.getElementById('service-form');
-            let previousQueryLength;
-            form.addEventListener('keyup', function(event) {
-                event.preventDefault()
-                let locationQuery = document.getElementById('location').value;
-                if (locationQuery.length >= 2 && locationQuery.length < 15 && previousQueryLength !== locationQuery.length) {
-                    let request = axios.get('/locations/search/?query=' + locationQuery)
-                        .then(function (response) {
-                            $('#location-wrapper .list-group-item').remove();
-                            for (let x = 0; x < response.data.response.results.length; x++) {
-                                let newLi = document.createElement('li');
-                                let newDiv1 = document.createElement('div');
-                                let newDiv2 = document.createElement('div');
-                                let newSpan = document.createElement('span');
-
-                                $(newLi).addClass('list-group-item d-flex justify-content-between align-items-start location');
-                                $(newLi).attr('id', 'location-' + x);
-                                $(newDiv1).addClass('ms-2 me-auto');
-                                $(newLi).css('background-image', 'url("' + response.data.response.results[x].icon + '")');
-                                $(newLi).css('background-repeat', 'no-repeat');
-                                $(newLi).css('background-position', '98% center');
-                                $(newLi).css('background-size', '5%');
-                                $(newLi).css('cursor', 'pointer');
-                                $(newDiv2).addClass('fw-bold');
-                                $(newDiv2).html(response.data.response.results[x].name);
-                                $(newSpan).addClass('badge bg-primary rounded-pill');
-                                $(newDiv1).html(newDiv2.outerHTML + response.data.response.results[x].formatted_address);
-                                $(newLi).append(newDiv1);
-                                $(newLi).append(newSpan);
-                                $('#location-wrapper').css('display', 'flex');
-                                $('#location-wrapper').append(newLi);
-                            }
-
-                            $('.location').click(function() {
-                                let resultIndex = $(this).attr('id').split('-')[1]
-                                $('#location-json').val(JSON.stringify(response.data.response.results[resultIndex]));
-                                $('#location').css('background-image', 'url("' + response.data.response.results[resultIndex].icon + '")');
-                                $('#location').css('background-repeat', 'no-repeat');
-                                $('#location').css('background-position', '98% center');
-                                $('#location').css('background-size', '5%');
-                                $('#location').val(response.data.response.results[resultIndex].formatted_address);
-                                $('#location-wrapper').css('display', 'none');
-                            });
-                            request = null;
-                        })
-                        .catch(function (error) {
-                            // handle error
-                            console.log(error);
-                        }).then(function () {
-                            previousQueryLength = locationQuery.length
-                        })
-                }
-            })
-
-
-            $('#submit-button').click(function (event) {
-                event.preventDefault();
-                $('#location').val($('#location-json').val());
-                $('#service-form').submit();
-            });
         });
     </script>
 </head>
@@ -133,17 +72,9 @@
 
     <div class="preloader"></div>
 
-    
+
     <div class="main-wrapper">
-        {% if form.errors and form.non_field_errors %}
-            <div class="alert alert-danger">
-                <ul>
-                {% for error in form.non_field_errors %}
-                    <li>{{ error|escape }}</li>
-                {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+
         <!-- navigation top-->
         <div class="nav-header bg-white shadow-xs border-0">
             <div class="nav-top">
@@ -153,7 +84,7 @@
                 <a href="#" class="me-2 menu-search-icon mob-menu"><i class="feather-search text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
                 <button class="nav-menu me-0 ms-2"></button>
             </div>
-            
+
             <form action="#" class="float-left header-search">
                 <div class="form-group mb-0 icon-input">
                     <i class="feather-search font-sm text-grey-400"></i>
@@ -169,10 +100,15 @@
                     <input type="hidden" value="" name="service-uuid" id="service-uuid">
                 </div>
             </form>
+            <a href="{% url 'home.feed' %}" class="p-2 text-center ms-3 menu-icon center-menu-icon"><i class="feather-home font-lg alert-primary btn-round-lg theme-dark-bg text-current "></i></a>
+            <a href="default-storie.html" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-zap font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
+            <a href="default-video.html" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-video font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
+            <a href="{% url 'members.show' user.pk %}" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-user font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
+            <a href="shop-2.html" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-shopping-bag font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
 
             <a href="#" class="p-2 text-center ms-auto menu-icon" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="dot-count bg-warning"></span><i class="feather-bell font-xl text-current"></i></a>
             <div class="dropdown-menu dropdown-menu-end p-4 rounded-3 border-0 shadow-lg" aria-labelledby="dropdownMenu3">
-                
+
                 <h4 class="fw-700 font-xss mb-4">Notification</h4>
                 <div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
                     <img src="https://via.placeholder.com/50x50.png" alt="user" class="w40 position-absolute left-0">
@@ -277,7 +213,7 @@
                             </label>
                         </li>
                     </ul>
-                    
+
                     <div class="card bg-transparent-card border-0 d-block mt-3">
                         <h4 class="d-inline font-xssss mont-font fw-700">Header Background</h4>
                         <div class="d-inline float-right mt-1">
@@ -296,13 +232,13 @@
                             <label class="toggle toggle-dark"><input type="checkbox"><span class="toggle-icon"></span></label>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
-            
 
-            <a href="{% url 'members.settings' user.pk %}" class="p-0 ms-3 menu-icon"><img src="https://via.placeholder.com/50x50.png" alt="user" class="w40 mt--1"></a>
-            
+
+            <a href="{% url 'members.settings' member.pk %}" class="p-0 ms-3 menu-icon"><img src="https://via.placeholder.com/50x50.png" alt="user" class="w40 mt--1"></a>
+
         </div>
         <!-- navigation top -->
 
@@ -314,10 +250,11 @@
                         <div class="nav-caption fw-600 font-xssss text-grey-500"><span>New </span>Feeds</div>
                         <ul class="mb-1 top-content">
                             <li class="logo d-none d-xl-block d-lg-block"></li>
-                            <li><a href="{% url 'members.home' %}" class="nav-content-bttn open-font" ><i class="feather-tv btn-round-md bg-blue-gradiant me-3"></i><span>Newsfeed</span></a></li>
+                            <li><a href="{% url 'home.feed' %}" class="nav-content-bttn open-font" ><i class="feather-tv btn-round-md bg-blue-gradiant me-3"></i><span>Newsfeed</span></a></li>
                             <li><a href="default-badge.html" class="nav-content-bttn open-font" ><i class="feather-award btn-round-md bg-red-gradiant me-3"></i><span>Badges</span></a></li>
-                            <li><a href="default-group.html" class="nav-content-bttn open-font" ><i class="feather-zap btn-round-md bg-mini-gradiant me-3"></i><span>Popular Events</span></a></li>
-                            <li><a href="{% url 'members.show' user.pk %}" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Member Profile</span></a></li>
+                            <li><a href="default-storie.html" class="nav-content-bttn open-font" ><i class="feather-globe btn-round-md bg-gold-gradiant me-3"></i><span>Explore Stories</span></a></li>
+                            <li><a href="default-group.html" class="nav-content-bttn open-font" ><i class="feather-zap btn-round-md bg-mini-gradiant me-3"></i><span>Popular Groups</span></a></li>
+                            <li><a href="{% url 'members.show' member.pk %}" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Author Profile </span></a></li>
                         </ul>
                     </div>
 
@@ -325,16 +262,18 @@
                         <div class="nav-caption fw-600 font-xssss text-grey-500"><span>More </span>Pages</div>
                         <ul class="mb-3">
                             <li><a href="default-email-box.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-inbox me-3"></i><span>Email Box</span><span class="circle-count bg-warning mt-1">584</span></a></li>
-                            <li><a href="default-hotel.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-home me-3"></i><span>Near Events</span></a></li>
-                            <li><a href="default-event.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-map-pin me-3"></i><span>Latest Events</span></a></li>
+                            <li><a href="default-hotel.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-home me-3"></i><span>Near Hotel</span></a></li>
+                            <li><a href="default-event.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-map-pin me-3"></i><span>Latest Event</span></a></li>
+                            <li><a href="default-live-stream.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-youtube me-3"></i><span>Live Stream</span></a></li>
                         </ul>
                     </div>
                     <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1">
                         <div class="nav-caption fw-600 font-xssss text-grey-500"><span></span> Account</div>
                         <ul class="mb-1">
                             <li class="logo d-none d-xl-block d-lg-block"></li>
-                            <li><a href="{% url 'members.settings' user.pk %}" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-settings me-3 text-grey-500"></i><span>Settings</span></a></li>
+                            <li><a href="default-settings.html" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-settings me-3 text-grey-500"></i><span>Settings</span></a></li>
                             <li><a href="default-analytics.html" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-pie-chart me-3 text-grey-500"></i><span>Analytics</span></a></li>
+                            <li><a href="default-message.html" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-message-square me-3 text-grey-500"></i><span>Chat</span><span class="circle-count bg-warning mt-0">23</span></a></li>
                         </ul>
                     </div>
                 </div>
@@ -343,197 +282,53 @@
         <!-- navigation left -->
         <!-- main content -->
         <div class="main-content bg-lightblue theme-dark-bg right-chat-active">
-            
+
             <div class="middle-sidebar-bottom">
                 <div class="middle-sidebar-left">
                     <div class="middle-wrap">
                         <div class="card w-100 border-0 bg-white shadow-xs p-0 mb-4">
-                            <div class="card-body p-4 w-100 bg-current border-0 d-flex rounded-3">
-                                <a href="{% url 'home.feed' %}" class="d-inline-block mt-2"><i class="ti-arrow-left font-sm text-white"></i></a>
-                                <h4 class="font-xs text-white fw-600 ms-4 mb-0 mt-2">Create Service</h4>
-                            </div>
-                            <div class="card-body p-lg-5 p-4 w-100 border-0 ">
 
-                            <form method="post" id="service-form">
-                                {% csrf_token %}
-                                <div class="row" style="position: relative;">
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Title</label>
-                                            {{ form.title }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.title.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Location</label>
-                                            {{ form.location }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.location.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                            <input type="hidden" value="" name="location-json" id="location-json">
-                                        </div>
-                                    </div>
-
-                                    <ol class="list-group list-group-numbered" id="location-wrapper" style="
-                                        display: none;
-                                        position: relative;
-                                        background-color: rgb(255, 255, 255);
-                                        margin-top: -1rem;
-                                        padding-left: calc(var(--bs-gutter-x) / 2);
-                                        margin-bottom: 1rem;"></ol>
-                                </div>
-
+                            <div class="card-body p-lg-5 p-4 w-100 border-0">
                                 <div class="row">
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Start Date</label>
-                                            {{ form.start_date }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.start_date.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Credit(s)</label>
-                                            {{ form.credit }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.credit.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-12 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Description</label>
-                                            {{ form.description }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.description.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Participant Limit</label>
-                                            {{ form.participant_limit }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.participant_limit.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Repetition Term</label>
-                                            {{ form.repetition_term }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.repetition_term.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Privacy Status</label>
-                                            {{ form.privacy_status }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.privacy_status.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Participant Picking</label>
-                                            {{ form.participant_picking }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.participant_picking.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-12 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Category</label>
-                                            {{ form.category }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.category.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-12 mb-3">
-                                        <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Content</label>
-                                            {{ form.content }}
-                                            {% if form.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ form.content.errors.0|escape }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <!-- <div class="col-lg-12 mb-3">
-                                        <div class="card mt-3 border-0">
-                                            <div class="card-body d-flex justify-content-between align-items-end p-0">
-                                                <div class="form-group mb-0 w-100">
-                                                    <input type="file" name="file" id="file" class="input-file">
-                                                    <label for="file" class="rounded-3 text-center bg-white btn-tertiary js-labelFile p-4 w-100 border-dashed">
-                                                    <i class="ti-cloud-down large-icon me-3 d-block"></i>
-                                                    <span class="js-fileName">Drag and drop or click to replace</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>-->
-
                                     <div class="col-lg-12">
-                                        <a id="submit-button" class="bg-current text-center text-white font-xsss fw-600 p-3 w175 rounded-3 d-inline-block">Save</a>
+                                        <h4 class="mb-4 font-xxl fw-700 mont-font mb-lg-5 mb-4 font-md-xs">Settings</h4>
+                                        <div class="nav-caption fw-600 font-xssss text-grey-500 mb-2">Genaral</div>
+                                        <ul class="list-inline mb-4">
+                                            <li class="list-inline-item d-block border-bottom me-0"><a href="account-information.html" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-md bg-primary-gradiant text-white feather-home font-md me-3"></i> <h4 class="fw-600 font-xsss mb-0 mt-0">Acount Information</h4><i class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"></i></a></li>
+                                            <li class="list-inline-item d-block border-bottom me-0"><a href="contact-information.html" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-md bg-gold-gradiant text-white feather-map-pin font-md me-3"></i> <h4 class="fw-600 font-xsss mb-0 mt-0">Saved Address</h4><i class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"></i></a></li>
+                                            <li class="list-inline-item d-block me-0"><a href="social.html" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-md bg-red-gradiant text-white feather-twitter font-md me-3"></i> <h4 class="fw-600 font-xsss mb-0 mt-0">Social Acount</h4><i class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"></i></a></li>
+                                        </ul>
+
+                                        <div class="nav-caption fw-600 font-xsss text-grey-500 mb-2">Acount</div>
+                                        <ul class="list-inline mb-4">
+                                            <li class="list-inline-item d-block border-bottom me-0"><a href="payment.html" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-md bg-mini-gradiant text-white feather-credit-card font-md me-3"></i> <h4 class="fw-600 font-xsss mb-0 mt-0">My Cards</h4><i class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"></i></a></li>
+                                            <li class="list-inline-item d-block  me-0"><a href="password.html" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-md bg-blue-gradiant text-white feather-inbox font-md me-3"></i> <h4 class="fw-600 font-xsss mb-0 mt-0">Password</h4><i class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"></i></a></li>
+
+                                        </ul>
+
+                                        <div class="nav-caption fw-600 font-xsss text-grey-500 mb-2">Other</div>
+                                        <ul class="list-inline">
+                                            <li class="list-inline-item d-block border-bottom me-0"><a href="default-notification.html" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-md bg-gold-gradiant text-white feather-bell font-md me-3"></i> <h4 class="fw-600 font-xsss mb-0 mt-0">Notification</h4><i class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"></i></a></li>
+                                            <li class="list-inline-item d-block border-bottom me-0"><a href="help-box.html" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-md bg-primary-gradiant text-white feather-help-circle font-md me-3"></i> <h4 class="fw-600 font-xsss mb-0 mt-0">Help</h4><i class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"></i></a></li>
+                                            <li class="list-inline-item d-block me-0"><a href="#" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-md bg-red-gradiant text-white feather-lock font-md me-3"></i> <h4 class="fw-600 font-xsss mb-0 mt-0">Logout</h4><i class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"></i></a></li>
+
+                                        </ul>
                                     </div>
                                 </div>
 
-                            </form>
+
                             </div>
                         </div>
-                        <!-- <div class="card w-100 border-0 p-2"></div> -->
+
                     </div>
                 </div>
-                 
-            </div>            
+
+            </div>
         </div>
         <!-- main content -->
 
-                <!-- right chat -->
+        <!-- right chat -->
+        <!-- right chat -->
         <div class="right-chat nav-wrap mt-2 right-scroll-bar">
             <div class="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
 
@@ -641,14 +436,14 @@
                             </h3>
                             <span class="bg-success ms-auto btn-round-xss"></span>
                         </li>
-                        
+
                     </ul>
                 </div>
                 <div class="section full pe-3 ps-4 pt-4 pb-4 position-relative feed-body">
                     <h4 class="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">GROUPS</h4>
                     <ul class="list-group list-group-flush">
                         <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            
+
                             <span class="btn-round-sm bg-primary-gradiant me-3 ls-3 text-white font-xssss fw-700">UD</span>
                             <h3 class="fw-700 mb-0 mt-0">
                                 <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="#">Studio Express</a>
@@ -656,7 +451,7 @@
                             <span class="badge mt-0 text-grey-500 badge-pill pe-0 font-xsssss">2 min</span>
                         </li>
                         <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            
+
                             <span class="btn-round-sm bg-gold-gradiant me-3 ls-3 text-white font-xssss fw-700">UD</span>
                             <h3 class="fw-700 mb-0 mt-0">
                                 <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="#">Armany Design</a>
@@ -664,7 +459,7 @@
                             <span class="bg-warning ms-auto btn-round-xss"></span>
                         </li>
                         <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            
+
                             <span class="btn-round-sm bg-mini-gradiant me-3 ls-3 text-white font-xssss fw-700">UD</span>
                             <h3 class="fw-700 mb-0 mt-0">
                                 <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="#">De fabous</a>
@@ -677,7 +472,7 @@
                     <h4 class="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">Pages</h4>
                     <ul class="list-group list-group-flush">
                         <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            
+
                             <span class="btn-round-sm bg-primary-gradiant me-3 ls-3 text-white font-xssss fw-700">UD</span>
                             <h3 class="fw-700 mb-0 mt-0">
                                 <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="#">Armany Seary</a>
@@ -685,29 +480,29 @@
                             <span class="bg-success ms-auto btn-round-xss"></span>
                         </li>
                         <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
-                            
+
                             <span class="btn-round-sm bg-gold-gradiant me-3 ls-3 text-white font-xssss fw-700">UD</span>
                             <h3 class="fw-700 mb-0 mt-0">
                                 <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="#">Entropio Inc</a>
                             </h3>
                             <span class="bg-success ms-auto btn-round-xss"></span>
                         </li>
-                        
+
                     </ul>
                 </div>
 
             </div>
         </div>
 
-        
+
         <!-- right chat -->
-        
+
         <div class="app-footer border-0 shadow-lg bg-primary-gradiant">
-            <a href="default.html" class="nav-content-bttn nav-center"><i class="feather-home"></i></a>
+            <a href="{% url 'home.feed' %}" class="nav-content-bttn nav-center"><i class="feather-home"></i></a>
             <a href="default-video.html" class="nav-content-bttn"><i class="feather-package"></i></a>
-            <a href="default-live-stream.html" class="nav-content-bttn" data-tab="chats"><i class="feather-layout"></i></a>            
+            <a href="default-live-stream.html" class="nav-content-bttn" data-tab="chats"><i class="feather-layout"></i></a>
             <a href="shop-2.html" class="nav-content-bttn"><i class="feather-layers"></i></a>
-            <a href="{% url 'members.settings' user.pk %}" class="nav-content-bttn"><img src="https://via.placeholder.com/50x50.png" alt="user" class="w30 shadow-xss"></a>
+            <a href="{% url 'members.settings' member.pk %}" class="nav-content-bttn"><img src="https://via.placeholder.com/50x50.png" alt="user" class="w30 shadow-xss"></a>
         </div>
 
         <div class="app-header-search">
@@ -724,12 +519,12 @@
             </form>
         </div>
 
-    </div> 
+    </div>
 
 
     <script src="{% static 'public/js/plugin.js' %}"></script>
     <script src="{% static 'public/js/scripts.js' %}"></script>
-    
+
 </body>
 
 </html>

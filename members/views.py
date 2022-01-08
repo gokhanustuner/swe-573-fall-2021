@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 from django.urls import reverse_lazy
 from members.forms import RegisterForm, LoginForm
+from members.models import Member
 from django.views.generic.edit import CreateView, FormView
 from django.contrib.auth import authenticate, login
 
@@ -47,3 +48,11 @@ class RegisterView(CreateView):
     form_class = RegisterForm
     success_url = reverse_lazy('members.login')
     template_name = 'members/register.html'
+
+
+def settings(request, pk):
+    member = Member.objects.get(pk=pk)
+
+    return render(request, 'members/settings.html', {
+        'member': member,
+    })

@@ -72,6 +72,7 @@ class ServiceCreateForm(forms.ModelForm):
 
 class ServiceUpdateForm(forms.ModelForm):
     CANCELLATION_CHOICES = (0, 'No'), (1, 'Yes')
+    DELIVERY_CHOICES = (0, 'No'), (1, 'Yes')
 
     title = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',
@@ -111,6 +112,9 @@ class ServiceUpdateForm(forms.ModelForm):
     cancelled = forms.ChoiceField(choices=CANCELLATION_CHOICES, widget=forms.Select(attrs={
         'class': 'form-control',
     }))
+    delivered = forms.ChoiceField(choices=DELIVERY_CHOICES, widget=forms.Select(attrs={
+        'class': 'form-control',
+    }))
     content = forms.CharField(widget=forms.Textarea(attrs={
         'class': 'form-control mb-0 p-3 h100 bg-greylight lh-16',
         'rows': 5,
@@ -132,5 +136,6 @@ class ServiceUpdateForm(forms.ModelForm):
             'privacy_status',
             'participant_picking',
             'cancelled',
+            'delivered',
             'content',
         )
