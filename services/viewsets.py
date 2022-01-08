@@ -148,8 +148,13 @@ class ServiceAttendanceDocumentViewSet(DocumentViewSet):
     # Define filtering fields
     filter_fields = {
         # 'id': None,
+        'member_id': 'member.id',
         'service_id': 'service.id',
         # 'title': 'city.name.raw',
+    }
+
+    ordering_fields = {
+        'created_at': None,
     }
 
 
@@ -161,6 +166,11 @@ class ServiceAttendanceRequestDocumentViewSet(DocumentViewSet):
     # Define filtering fields
     filter_fields = {
         # 'id': None,
+        'member_id': 'member.id',
         'service_id': 'service.id',
         # 'title': 'city.name.raw',
+    }
+
+    ordering_fields = {
+        'created_at': None,
     }

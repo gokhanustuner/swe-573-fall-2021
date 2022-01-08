@@ -82,13 +82,38 @@
                     }
                 ).then(function (response) {
                     console.log(response);
-                    if (response.data.status === 'waiting') {
-                        $('#attend').html('Waiting for the Service Owner\'s Approval')
+                    $('#attend').css('display', 'none')
+                    $('#insufficient-credit').css('display', 'none')
+                    $('#cancel').removeAttr('style')
+                    $('#member-credit').html(response.data.credit + 'h');
+
+                    request = null;
+                }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                }).then(function () {
+
+                })
+            })
+
+            $('#cancel').click(function () {
+                let request = axios.post(
+                    '{% url 'services.cancel_attendance' %}',
+                    {
+                        'service_id': $('#service_id').val()
+                    },
+                    {
+                        headers: {
+                            "X-CSRFToken": '{{ csrf_token }}',
+                            'csrfmiddlewaretoken' : '{{ csrf_token }}',
+                        }
                     }
-                    if (response.data.status === 'approved') {
-                        $('#attend').html('Cancel Attendance')
-                        $('#member-credit').html(response.data.credit + 'h');
-                    }
+                ).then(function (response) {
+                    console.log(response);
+                    $('#cancel').css('display', 'none')
+                    $('#insufficient-credit').css('display', 'none')
+                    $('#attend').removeAttr('style')
+                    $('#member-credit').html(response.data.credit + 'h');
 
                     request = null;
                 }).catch(function (error) {
@@ -358,30 +383,51 @@
                                     <a href="" style="display: inline-block;" class=" font-xssss fw-600 text-grey-500 card-body p-0 align-items-center"><i class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"></i>Create Event</a>
                                 </div>
                             </div>
-                            {% for service in services %}
+
                                 <input type="hidden" id="service_id" name="service_id" value="{{ service.uuid }}">
                                 <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
                                     <div class="card-body p-0 d-flex">
                                         <figure class="avatar me-3"><img src="https://via.placeholder.com/50x50.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
                                         <h4 class="fw-700 text-grey-900 font-xssss mt-1">{{ service.title }}
-                                            <a id="attend" href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
-                                                {% if service.participant_picking == 1 %} <!-- Add && service.attendance.count < service.participant_limit -->
-                                                    Attend
-                                                {% elif service.participant_picking == 2 %}
-                                                    + Request to Attend
+                                                {% if member_status_on_service == 'can_attend' %}
+                                                    <a id="attend" href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                        + Attend
+                                                    </a>
+                                                    <a id="cancel" style="display: none;" href="#" class="p-2 lh-20 w100 bg-warning me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                        - Cancel Attendance
+                                                    </a>
+                                                    <a href="#" id="insufficient-credit" style="display: none;" class="p-2 lh-20 w100 bg-danger me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                        Insufficient Credit
+                                                    </a>
+                                                {% elif member_status_on_service == 'can_cancel_attendance' %}
+                                                    <a id="cancel" href="#" class="p-2 lh-20 w100 bg-warning me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                        - Cancel Attendance
+                                                    </a>
+                                                    <a id="attend" style="display: none;" href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                        + Attend
+                                                    </a>
+                                                    <a href="#" id="insufficient-credit" style="display: none;" class="p-2 lh-20 w100 bg-danger me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                        Insufficient Credit
+                                                    </a>
+                                                {% elif member_status_on_service == 'insufficient_credit' %}
+                                                    <a href="#" id="insufficient-credit" class="p-2 lh-20 w100 bg-danger me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                        Insufficient Credit
+                                                    </a>
+                                                    <a id="cancel" style="display: none;" href="#" class="p-2 lh-20 w100 bg-warning me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                        - Cancel Attendance
+                                                    </a>
+                                                    <a id="attend" style="display: none;" href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                        + Attend
+                                                    </a>
                                                 {% endif %}
                                             </a>
-                                            <span style="
-                                                background-position: 98% 1.4em;
-                                                background-size: 8%;
-                                                background-repeat: no-repeat;
-                                                background-image: url('{{ service.location_type_icon }}');
-                                                padding-right: 1.6em;
-                                            " class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
-                                                Starts at {{ service.start_date|date:'d/m/Y H:i' }}<br>
-                                                {{ service.formatted_address }}<br>
-                                                Category: {{ service.category_name }}
+                                            <span class="d-flex font-xssss fw-500 mt-1 lh-3 text-grey-500">
+                                                Starts at {{ service.start_date|date:'d/m/Y H:i' }}
                                             </span>
+                                            <span class="d-inline-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
+                                                {{ service.formatted_address }}
+                                            </span>
+                                            <img class="d-inline-block" src="{{ service.location_type_icon }}" width="12" height="12">
                                         </h4>
                                         <a href="#" class="ms-auto" id="dropdownMenu5" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
                                         <div class="dropdown-menu dropdown-menu-start p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu5">
@@ -409,8 +455,18 @@
                                         </a>
                                     </div>
                                     <div class="card-body p-0 me-lg-5">
-                                        <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">{{ service.description }}
-                                            <a href="{% url 'services.detail' service.uuid %}" class="fw-600 text-primary ms-2">See more</a></p>
+                                        <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">{{ service.description }}</p>
+                                        <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">
+                                            <a style="padding: 0 !important; " href="#" class="p-2 text-center ms-0 menu-icon center-menu-icon">
+                                                <i class="feather-user font-xs bg-greylight btn-round-xs theme-dark-bg text-grey-500 "></i>
+                                            </a>
+                                            {% if all_attendance.count > 0 %}
+                                                {{ all_attendance.count }} people attending to this service
+                                            {% else %}
+                                                Nobody attended to this service yet
+                                            {% endif %}
+                                        </p>
+
                                     </div>
                                     <div class="card-body d-flex p-0">
                                         <a href="#" class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2"><i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i> <i class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"></i>2.8K Like</a>
@@ -430,7 +486,7 @@
                                         <a href="#" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
                                     </div>
                                 </div>
-                            {% endfor %}
+
 
                         </div>
                         <div class="col-xl-4 col-xxl-3 col-lg-4 ps-md-0">

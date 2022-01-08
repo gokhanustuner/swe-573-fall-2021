@@ -11,7 +11,7 @@ from django_elasticsearch_dsl_drf.wrappers import dict_to_obj
 class Service(models.Model):
     CATEGORY_CHOICES = (1, _('Food')), (2, _('Music')), (3, _('Education')), (4, _('Arts')), (9, _('Sports')), \
                        (5, _('Entertainment')), (6, _('Technical')), (7, _('Craftsmanship')), \
-                       (8, _('Repair and maintenance'))
+                       (8, _('Repair and maintenance')), (10, _('Travel Activities'))
 
     class Meta:
         ordering = ['created_at']
@@ -52,6 +52,7 @@ class Service(models.Model):
         CRAFTSMANSHIP = 7, _('Craftsmanship')
         REPAIR_AND_MAINTENANCE = 8, _('Repair and maintenance'),
         SPORTS = 9, _('Sports')
+        TRAVEL_ACTIVITIES = (10, _('Travel Activities'))
 
     uuid = models.UUIDField(
         verbose_name=_('Service ID'),
@@ -170,7 +171,7 @@ class Service(models.Model):
 
     @property
     def category_name_field_indexing(self):
-        return list(filter(lambda x: x[0] == 2, self.CATEGORY_CHOICES))[0][1]
+        return list(filter(lambda x: x[0] == self.category, self.CATEGORY_CHOICES))[0][1]
 
     @property
     def owner_indexing(self):
@@ -297,6 +298,8 @@ class ServiceAttendance(models.Model):
         choices=ServiceAttendanceStatus.choices,
         default=ServiceAttendanceStatus.ACTIVE,
     )
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     @property
     def owner_indexing(self):
