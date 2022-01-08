@@ -1,13 +1,12 @@
 import json
-
 import operator
+
 from django.shortcuts import render
 from django.http import HttpResponseNotFound, JsonResponse
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from services.models import Service, ServiceRate, ServiceAttendance, ServiceAttendanceRequest
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
 from services.forms import ServiceCreateForm, ServiceUpdateForm
 from services.viewsets import ServiceDocumentViewSet
 from services.documents import ServiceDocument, ServiceAttendanceDocument, ServiceAttendanceRequestDocument
@@ -17,7 +16,6 @@ from members.models import Member
 from django.views.decorators.cache import never_cache
 from elasticsearch_dsl.query import Q
 from functools import reduce
-import operator
 
 
 class ServiceListView(ListView):
@@ -62,7 +60,8 @@ class ServiceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return service.owner == self.request.user
 
 
-# authentication required
+@never_cache
+@login_required
 def service_detail(request, pk):
     try:
         service_search = ServiceDocument.search().filter('match_phrase', uuid=pk)
@@ -172,6 +171,8 @@ def cancel_service_attendance(request):
     })
 
 
+@never_cache
+@login_required
 def service_attendants(request, pk):
     service_search = ServiceDocument.search().filter('match_phrase', uuid=pk)
     service = next(service_search.__iter__())
