@@ -9,5 +9,6 @@ urlpatterns = [
     path('<uuid:pk>/delete/', views.ServiceDeleteView.as_view(), name='services.delete'),
     path('search/', views.ServiceDocumentView.as_view({'get': 'list'}), name='services.search'),
     path('attend/', views.attend_to_service, name='services.attend'),
+    path('cancel/', views.cancel_service_attendance, name='services.cancel_attendance'),
     # path('delete/', views.delete, name='services.delete'),
 ]

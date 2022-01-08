@@ -332,17 +332,14 @@
                             <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
                                 <div class="card-body p-0 d-flex">
                                     <figure class="avatar me-3"><img src="https://via.placeholder.com/50x50.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
-                                    <h4 class="fw-700 text-grey-900 font-xssss mt-1">{{ service.title }}
-                                        <span style="
-                                            background-position: 98% 1.4em;
-                                            background-size: 8%;
-                                            background-repeat: no-repeat;
-                                            background-image: url('{{ service.location_type_icon }}');
-                                            padding-right: 1.6em;
-                                        " class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
-                                            Starts at {{ service.start_date|date:'d/m/Y H:i' }}<br>
+                                    <h4 class="fw-700 text-grey-900 font-xssss mt-1">{{ service.title }}<br>
+                                        <span class="d-flex font-xssss fw-500 mt-1 lh-3 text-grey-500">
+                                            Starts at {{ service.start_date|date:'d/m/Y H:i' }}
+                                        </span>
+                                        <span class="d-inline-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
                                             {{ service.formatted_address }}
                                         </span>
+                                        <img class="d-inline-block" src="{{ service.location_type_icon }}" width="12" height="12">
                                     </h4>
                                     <a href="#" class="ms-auto" id="dropdownMenu5" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
                                     <div class="dropdown-menu dropdown-menu-start p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu5">

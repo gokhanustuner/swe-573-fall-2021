@@ -39,6 +39,7 @@ class ServiceAttendanceDocumentSerializer(DocumentSerializer):
             'owner',
             'service',
             'status',
+            'created_at',
         )
 
 
@@ -51,4 +52,5 @@ class ServiceAttendanceRequestDocumentSerializer(DocumentSerializer):
             'owner',
             'service',
             'status',
+            'created_at',
         )

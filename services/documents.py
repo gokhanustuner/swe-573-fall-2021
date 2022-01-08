@@ -142,30 +142,31 @@ class ServiceAttendanceDocument(Document):
         },
     )
 
-    owner = fields.ObjectField(
+    owner = fields.NestedField(
         properties={
             'id': fields.IntegerField(),
             'full_name': StringField(),
             'credit': fields.IntegerField()
-        }
+        }, include_in_root=True
     )
 
-    member = fields.ObjectField(
+    member = fields.NestedField(
         properties={
             'id': fields.IntegerField(),
             'full_name': StringField(),
             'credit': fields.IntegerField()
-        }
+        }, include_in_root=True
     )
 
-    service = fields.ObjectField(
+    service = fields.NestedField(
         properties={
             'uuid': StringField(),
             'title': StringField(),
-        }
+        }, include_in_root=True
     )
 
     status = fields.IntegerField()
+    created_at = fields.DateField()
 
     class Django:
         """Meta options."""
@@ -200,27 +201,27 @@ class ServiceAttendanceRequestDocument(Document):
         },
     )
 
-    owner = fields.ObjectField(
+    owner = fields.NestedField(
         properties={
             'id': fields.IntegerField(),
             'full_name': StringField(),
             'credit': fields.IntegerField()
-        }
+        }, include_in_root=True
     )
 
-    member = fields.ObjectField(
+    member = fields.NestedField(
         properties={
             'id': fields.IntegerField(),
             'full_name': StringField(),
             'credit': fields.IntegerField()
-        }
+        }, include_in_root=True
     )
 
-    service = fields.ObjectField(
+    service = fields.NestedField(
         properties={
             'uuid': StringField(),
             'title': StringField(),
-        }
+        }, include_in_root=True
     )
 
     status = fields.IntegerField()

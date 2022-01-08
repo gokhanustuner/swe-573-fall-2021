@@ -129,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = 'members.home'
+LOGIN_REDIRECT_URL = 'home.feed'
 LOGOUT_REDIRECT_URL = 'members.login'
 LOGIN_URL = 'members.login'
 
