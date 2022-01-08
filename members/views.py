@@ -45,7 +45,7 @@ class LoginView(FormView):
             if redirect_path != '':
                 return redirect(redirect_path)
             else:
-                return redirect(reverse_lazy('members.home'))
+                return redirect(reverse_lazy('home.feed'))
 
         return super(LoginView, self).form_invalid(form)
 
