@@ -8,9 +8,15 @@ from members.forms import RegisterForm, LoginForm
 from members.models import Member
 from django.views.generic.edit import CreateView, FormView
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.cache import never_cache
+from elasticsearch_dsl.query import Q
+from services.documents import ServiceDocument, ServiceAttendanceDocument
 
 
 @require_GET
+@never_cache
+@login_required
 def show(request, pk: int) -> HttpResponse:
     return HttpResponse(f'This is the id of request {pk}')
 
@@ -50,9 +56,27 @@ class RegisterView(CreateView):
     template_name = 'members/register.html'
 
 
+@never_cache
+@login_required
 def settings(request, pk):
-    member = Member.objects.get(pk=pk)
+    return render(request, 'members/settings.html')
 
-    return render(request, 'members/settings.html', {
-        'member': member,
+
+def services(request, pk):
+    service_list = ServiceDocument.search().filter(
+        'nested',
+        path='owner',
+        query=Q(
+            'match',
+            owner__id=pk,
+        ),
+    )
+
+    return render(request, 'members/services.html', {
+        'services': service_list,
     })
+
+
+def test_func(self):
+    service = self.get_object()
+    return service.owner == self.request.user

@@ -93,7 +93,7 @@ class ServiceDocument(Document):
     photo = fields.FileField()
     created_at = fields.DateField()
 
-    owner = fields.ObjectField(
+    owner = fields.NestedField(
         properties={
             'id': fields.IntegerField(),
             'full_name': StringField(
@@ -103,7 +103,7 @@ class ServiceDocument(Document):
                 }
             ),
             'credit': fields.IntegerField()
-        }
+        }, include_in_root=True
     )
     location = fields.TextField()
     # Formatted address
