@@ -16,9 +16,58 @@
     <link rel="stylesheet" href="{% static 'public/css/emoji.css' %}">
 
     <link rel="stylesheet" href="{% static 'public/css/lightbox.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
+            $('.fa-star').click(function () {
+                let maxRate = 5;
+                let id = $(this).attr('id');
+                let value = parseInt(id.split('-')[1]);
+                $('#rate').val(value);
+                if (value === 5) {
+                    $('.fa-star').addClass('checked')
+                } else {
+                    while (maxRate > value) {
+                        $('#star-' + maxRate).removeClass('checked');
+                        maxRate--;
+                    }
+
+                    while (value > 0) {
+                        $('#star-' + value).addClass('checked');
+                        value--;
+                    }
+                }
+            });
+
+            $('#submit-button').click(function () {
+                let request = axios.post(
+                    '{% url 'services.rate' %}',
+                    {
+                        'service_id': $('#service_id').val(),
+                        'voter_id': '{{ user.pk }}',
+                        'content': $('#content').val(),
+                        'rate': $('#rate').val(),
+                    },
+                    {
+                        headers: {
+                            "X-CSRFToken": '{{ csrf_token }}',
+                            'csrfmiddlewaretoken' : '{{ csrf_token }}',
+                        }
+                    }
+                ).then(function (response) {
+                    console.log(response);
+                    $('#submit-button').html('Review saved')
+                    $('#submit-button').removeAttr('id')
+
+                    request = null;
+                }).catch(function (error) {
+                    // handle error
+                    console.log(error);
+                }).then(function () {
+
+                })
+            })
             let searchBar = document.getElementById('search-bar');
             let previousQueryLength;
             const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -125,6 +174,14 @@
             })
         });
     </script>
+    <style>
+        .fa-star {
+            cursor: pointer;
+        }
+        .fa-star.checked {
+            color: orange;
+        }
+    </style>
 </head>
 
 <body class="color-theme-blue mont-font">
@@ -389,38 +446,45 @@
                                     <div class="card-body p-0 d-flex">
                                         <figure class="avatar me-3"><img src="https://via.placeholder.com/50x50.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
                                         <h4 class="fw-700 text-grey-900 font-xssss mt-1">{{ service.title }}
-                                                {% if member_status_on_service == 'can_attend' %}
-                                                    <a id="attend" href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
-                                                        + Attend
-                                                    </a>
-                                                    <a id="cancel" style="display: none;" href="#" class="p-2 lh-20 w100 bg-warning me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
-                                                        - Cancel Attendance
-                                                    </a>
-                                                    <a href="#" id="insufficient-credit" style="display: none;" class="p-2 lh-20 w100 bg-danger me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
-                                                        Insufficient Credit
-                                                    </a>
-                                                {% elif member_status_on_service == 'can_cancel_attendance' %}
-                                                    <a id="cancel" href="#" class="p-2 lh-20 w100 bg-warning me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
-                                                        - Cancel Attendance
-                                                    </a>
-                                                    <a id="attend" style="display: none;" href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
-                                                        + Attend
-                                                    </a>
-                                                    <a href="#" id="insufficient-credit" style="display: none;" class="p-2 lh-20 w100 bg-danger me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
-                                                        Insufficient Credit
-                                                    </a>
-                                                {% elif member_status_on_service == 'insufficient_credit' %}
-                                                    <a href="#" id="insufficient-credit" class="p-2 lh-20 w100 bg-danger me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
-                                                        Insufficient Credit
-                                                    </a>
-                                                    <a id="cancel" style="display: none;" href="#" class="p-2 lh-20 w100 bg-warning me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
-                                                        - Cancel Attendance
-                                                    </a>
-                                                    <a id="attend" style="display: none;" href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
-                                                        + Attend
-                                                    </a>
-                                                {% endif %}
-                                            </a>
+                                            {% if member_status_on_service == 'can_attend' %}
+                                                <a id="attend" href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    + Attend
+                                                </a>
+                                                <a id="cancel" style="display: none;" href="#" class="p-2 lh-20 w100 bg-warning me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    - Cancel Attendance
+                                                </a>
+                                                <a href="#" id="insufficient-credit" style="display: none;" class="p-2 lh-20 w100 bg-danger me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    Insufficient Credit
+                                                </a>
+                                            {% elif member_status_on_service == 'can_cancel_attendance' %}
+                                                <a id="cancel" href="#" class="p-2 lh-20 w100 bg-warning me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    - Cancel Attendance
+                                                </a>
+                                                <a id="attend" style="display: none;" href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    + Attend
+                                                </a>
+                                                <a href="#" id="insufficient-credit" style="display: none;" class="p-2 lh-20 w100 bg-danger me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    Insufficient Credit
+                                                </a>
+                                            {% elif member_status_on_service == 'insufficient_credit' %}
+                                                <a href="#" id="insufficient-credit" class="p-2 lh-20 w100 bg-danger me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    Insufficient Credit
+                                                </a>
+                                                <a id="cancel" style="display: none;" href="#" class="p-2 lh-20 w100 bg-warning me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    - Cancel Attendance
+                                                </a>
+                                                <a id="attend" style="display: none;" href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    + Attend
+                                                </a>
+                                            {% elif member_status_on_service == 'service_delivered' %}
+                                                <a href="#" id="service-delivered" class="p-2 lh-20 w100 bg-success me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    Service Delivered
+                                                </a>
+                                            {% elif member_status_on_service == 'service_cancelled' %}
+                                                <a href="#" id="service-cancelled" class="p-2 lh-20 w100 bg-danger me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">
+                                                    Service Cancelled
+                                                </a>
+                                            {% endif %}
                                             <span class="d-flex font-xssss fw-500 mt-1 lh-3 text-grey-500">
                                                 Starts at {{ service.start_date|date:'d/m/Y H:i' }}
                                             </span>
@@ -429,32 +493,13 @@
                                             </span>
                                             <img class="d-inline-block" src="{{ service.location_type_icon }}" width="12" height="12">
                                         </h4>
-                                        <a href="#" class="ms-auto" id="dropdownMenu5" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-start p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu5">
-                                            <div class="card-body p-0 d-flex">
-                                                <i class="feather-bookmark text-grey-500 me-3 font-lg"></i>
-                                                <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Save Link <span class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500">Add this to your saved items</span></h4>
-                                            </div>
-                                            <div class="card-body p-0 d-flex mt-2">
-                                                <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
-                                                <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Hide Post <span class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500">Save to your saved items</span></h4>
-                                            </div>
-                                            <div class="card-body p-0 d-flex mt-2">
-                                                <i class="feather-alert-octagon text-grey-500 me-3 font-lg"></i>
-                                                <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Hide all from Group <span class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500">Save to your saved items</span></h4>
-                                            </div>
-                                            <div class="card-body p-0 d-flex mt-2">
-                                                <i class="feather-lock text-grey-500 me-3 font-lg"></i>
-                                                <h4 class="fw-600 mb-0 text-grey-900 font-xssss mt-0 me-4">Unfollow Group <span class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500">Save to your saved items</span></h4>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="card-body p-0 mb-3 rounded-3 overflow-hidden">
                                         <a href="#" class="video-btn">
                                             <img src="https://via.placeholder.com/615x350.png" alt="">
                                         </a>
                                     </div>
-                                    <div class="card-body p-0 me-lg-5">
+                                    <div class="card-body p-0 me-lg-5" style="margin-right: 0 !important;">
                                         <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">{{ service.description }}</p>
                                         <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">
                                             <a href="{% url 'services.attendants' service.uuid %}" style="padding: 0 !important; " href="#" class="p-2 text-center ms-0 menu-icon center-menu-icon">
@@ -467,23 +512,38 @@
                                             {% endif %}
                                         </p>
 
-                                    </div>
-                                    <div class="card-body d-flex p-0">
-                                        <a href="#" class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2"><i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i> <i class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"></i>2.8K Like</a>
-                                        <div class="emoji-wrap">
-                                            <ul class="emojis list-inline mb-0">
-                                                <li class="emoji list-inline-item"><i class="em em---1"></i> </li>
-                                                <li class="emoji list-inline-item"><i class="em em-angry"></i></li>
-                                                <li class="emoji list-inline-item"><i class="em em-anguished"></i> </li>
-                                                <li class="emoji list-inline-item"><i class="em em-astonished"></i> </li>
-                                                <li class="emoji list-inline-item"><i class="em em-blush"></i></li>
-                                                <li class="emoji list-inline-item"><i class="em em-clap"></i></li>
-                                                <li class="emoji list-inline-item"><i class="em em-cry"></i></li>
-                                                <li class="emoji list-inline-item"><i class="em em-full_moon_with_face"></i></li>
-                                            </ul>
-                                        </div>
-                                        <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
-                                        <a href="#" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
+                                        {% if service.delivered %}
+                                            <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">
+                                                <span class="fa fa-star checked" id="star-1"></span>
+                                                <span class="fa fa-star" id="star-2"></span>
+                                                <span class="fa fa-star" id="star-3"></span>
+                                                <span class="fa fa-star" id="star-4"></span>
+                                                <span class="fa fa-star" id="star-5"></span>
+                                                Nobody rated to this service yet
+                                            </p>
+
+                                            <div class="col-lg-12 mb-3">
+                                                <div class="form-group">
+                                                    <label class="mont-font fw-600 font-xsss">Comment:</label>
+                                                    <textarea
+                                                            name="content"
+                                                            cols="40"
+                                                            rows="5"
+                                                            class="form-control mb-0 p-3 h100 bg-greylight lh-16"
+                                                            placeholder="Write your comment about the service..."
+                                                            spellcheck="false"
+                                                            required=""
+                                                            id="content"
+                                                    ></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <a id="submit-button" class="bg-current text-center text-white font-xsss fw-600 p-3 w175 rounded-3 d-inline-block">Save</a>
+                                            </div>
+
+                                            <input type="hidden" id="rate" name="rate" value="1">
+                                        {% endif %}
                                     </div>
                                 </div>
 

@@ -362,12 +362,12 @@ class ServiceRate(models.Model):
         editable=False,
         unique=True,
     )
-    voter = models.OneToOneField(
+    voter = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member attending to the service'),
     )
-    service = models.OneToOneField(
+    service = models.ForeignKey(
         'Service',
         on_delete=models.CASCADE,
         verbose_name=_('Attended service')
@@ -376,5 +376,15 @@ class ServiceRate(models.Model):
         verbose_name=_('Service rate value'),
         choices=ServiceRateValue.choices,
     )
-    content = models.TextField(verbose_name=_('Member comment for service'))
+    content = models.TextField(verbose_name=_('Member comment for service'), null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def voter_indexing(self):
+        wrapper = dict_to_obj({
+            'id': self.voter.pk,
+            'full_name': self.voter.full_name,
+            'credit': self.voter.credit,
+        })
+
+        return wrapper

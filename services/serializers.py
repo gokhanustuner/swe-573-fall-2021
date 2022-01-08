@@ -1,5 +1,10 @@
 from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
-from services.documents import ServiceDocument, ServiceAttendanceDocument, ServiceAttendanceRequestDocument
+from services.documents import (
+    ServiceDocument,
+    ServiceAttendanceDocument,
+    ServiceAttendanceRequestDocument,
+    ServiceRateDocument
+)
 
 
 class ServiceDocumentSerializer(DocumentSerializer):
@@ -52,5 +57,18 @@ class ServiceAttendanceRequestDocumentSerializer(DocumentSerializer):
             'owner',
             'service',
             'status',
+            'created_at',
+        )
+
+
+class ServiceRateDocumentSerializer(DocumentSerializer):
+    class Meta:
+        document = ServiceRateDocument
+        fields = (
+            'uuid',
+            'voter',
+            'service',
+            'rate',
+            'content',
             'created_at',
         )

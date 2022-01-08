@@ -94,16 +94,22 @@ def service_detail(request, pk):
             ),
         ).sort('-created_at')
 
-        if attendance_search.count() > 0:
-            member_status_on_service = 'can_cancel_attendance'
-        else:
-            if (member.credit - service.credit) >= 0:
-                if service.participant_limit <= (service.participant_limit + 1):
-                    member_status_on_service = 'can_attend'
-                else:
-                    member_status_on_service = 'insufficient_limit'
+        if not service.delivered or service.cancelled:
+            if attendance_search.count() > 0:
+                member_status_on_service = 'can_cancel_attendance'
             else:
-                member_status_on_service = 'insufficient_credit'
+                if (member.credit - service.credit) >= 0:
+                    if service.participant_limit <= (service.participant_limit + 1):
+                        member_status_on_service = 'can_attend'
+                    else:
+                        member_status_on_service = 'insufficient_limit'
+                else:
+                    member_status_on_service = 'insufficient_credit'
+        else:
+            if service.delivered:
+                member_status_on_service = 'service_delivered'
+            elif service.cancelled:
+                member_status_on_service = 'service_cancelled'
     except Service.DoesNotExist:
         raise Service.DoesNotExist('Service does not exist')
 
@@ -189,6 +195,24 @@ def service_attendants(request, pk):
         'service': service,
         'all_attendance': all_attendance,
     })
+
+
+@never_cache
+@login_required
+def rate(request):
+    request_data = json.loads(request.body)
+    service = Service.objects.get(pk=request_data['service_id'])
+    member = Member.objects.get(pk=request.user.pk)
+    service_rate = ServiceRate(
+        service=service,
+        voter=member,
+        rate=request_data['rate'],
+        content=request_data['content'],
+    )
+
+    service_rate.save()
+
+    return JsonResponse({'status': 'success'})
 
 
 class ServiceDocumentView(ServiceDocumentViewSet):
