@@ -84,6 +84,12 @@ class ServiceDocument(Document):
             'raw': KeywordField(),
         }
     )
+    delivered = StringField(
+        analyzer=html_strip,
+        fields={
+            'raw': KeywordField(),
+        }
+    )
     photo = fields.FileField()
     created_at = fields.DateField()
 

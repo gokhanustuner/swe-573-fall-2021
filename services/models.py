@@ -41,6 +41,11 @@ class Service(models.Model):
         NO = 0, _('No')
         YES = 1, _('Yes')
 
+    class ServiceDelivered(models.IntegerChoices):
+        """Delivery options of a service"""
+        NO = 0, _('No')
+        YES = 1, _('Yes')
+
     class ServiceCategory(models.IntegerChoices):
         """Category options of a service"""
         FOOD = 1, _('Food')
@@ -100,6 +105,14 @@ class Service(models.Model):
         choices=ServiceCancelled.choices,
         default=ServiceCancelled.NO,
     )
+
+    delivered = models.BooleanField(
+        verbose_name='Delivered',
+        max_length=1,
+        choices=ServiceDelivered.choices,
+        default=ServiceDelivered.NO,
+    )
+
     photo = models.ImageField(upload_to='services', blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -130,6 +143,9 @@ class Service(models.Model):
 
     def is_cancelled(self):
         return self.cancelled == self.ServiceCancelled.YES
+
+    def is_delivered(self):
+        return self.delivered == self.ServiceDelivered.YES
 
     def get_absolute_url(self):
         return reverse('services.detail', kwargs={'pk': self.pk})
