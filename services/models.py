@@ -388,3 +388,12 @@ class ServiceRate(models.Model):
         })
 
         return wrapper
+
+    @property
+    def service_indexing(self):
+        wrapper = dict_to_obj({
+            'uuid': self.service.pk,
+            'title': self.service.title,
+        })
+
+        return wrapper

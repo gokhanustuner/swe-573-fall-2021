@@ -265,6 +265,13 @@ class ServiceRateDocument(Document):
         }, include_in_root=True
     )
 
+    service = fields.NestedField(
+        properties={
+            'uuid': StringField(),
+            'title': StringField(),
+        }, include_in_root=True
+    )
+
     rate = fields.IntegerField()
     content = fields.TextField()
     created_at = fields.DateField()
