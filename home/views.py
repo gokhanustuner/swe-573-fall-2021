@@ -5,9 +5,10 @@ from django.views.decorators.http import require_GET
 from services.documents import ServiceDocument, ServiceRateDocument
 from elasticsearch_dsl.query import Q
 from functools import reduce
-
+from django.views.decorators.cache import never_cache
 
 @require_GET
+@never_cache
 @login_required
 def feed(request):
     context = {}
@@ -16,16 +17,19 @@ def feed(request):
     else:
         services = []
 
-    service_rates = ServiceRateDocument.search().query(
-        reduce(operator.ior, [
-            Q(
-                'nested',
-                path='service',
-                query=Q('match', service__uuid=service.uuid),
-            )
-            for service in services
-        ])
-    ).sort('-created_at')
+    if ServiceRateDocument.search().count() > 0:
+        service_rates = ServiceRateDocument.search().query(
+            reduce(operator.ior, [
+                Q(
+                    'nested',
+                    path='service',
+                    query=Q('match', service__uuid=service.uuid),
+                )
+                for service in services
+            ])
+        ).sort('-created_at')
+    else:
+        service_rates = []
 
     service_rates_mapping = []
     service_rate_totals_mapping = {}
