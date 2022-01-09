@@ -1,4 +1,7 @@
 import operator
+import socket
+import requests
+import json
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
@@ -6,6 +9,7 @@ from services.documents import ServiceDocument, ServiceRateDocument
 from elasticsearch_dsl.query import Q
 from functools import reduce
 from django.views.decorators.cache import never_cache
+from decimal import *
 
 @require_GET
 @never_cache
@@ -15,7 +19,17 @@ def feed(request):
     if not request.GET.get('nearby'):
         services = ServiceDocument.search().sort('-start_date')
     else:
-        services = []
+        hostname = socket.gethostname()
+        ip_address = socket.gethostbyname(hostname)
+        url = 'https://api.ipstack.com/' + ip_address + '?access_key=5dd2d3da467259fc47a71a6507825165'
+        payload = {}
+        headers = {}
+        response = requests.request("GET", url, headers=headers, data=payload)
+        data = json.loads(response['data'])
+        getcontext().prec = 7
+        latitude = Decimal(data['latitude'])
+        longitude = Decimal(data['longitude'])
+        services = ServiceDocument.filter("geo_distance", coordinates={"lat": latitude, "lon": longitude}, distance='1km')
 
     if ServiceRateDocument.search().count() > 0:
         service_rates = ServiceRateDocument.search().query(

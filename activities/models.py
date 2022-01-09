@@ -1,15 +1,11 @@
 import uuid
-import json
 
-from django_mysql.models import Model as MySQLModel, DynamicField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.urls import reverse
 from django_elasticsearch_dsl_drf.wrappers import dict_to_obj
-from model_observer.model import ModelObserver
 
 
-class Service(models.Model):
+class Activity(models.Model):
     CATEGORY_CHOICES = (1, _('Food')), (2, _('Music')), (3, _('Education')), (4, _('Arts')), (9, _('Sports')), \
                        (5, _('Entertainment')), (6, _('Technical')), (7, _('Craftsmanship')), \
                        (8, _('Repair and maintenance')), (10, _('Travel Activities'))
@@ -20,35 +16,35 @@ class Service(models.Model):
     def __str__(self):
         return self.title
 
-    class ServiceRepetitionTerm(models.IntegerChoices):
-        """Repetition term options of a service"""
+    class ActivityRepetitionTerm(models.IntegerChoices):
+        """Repetition term options of an event"""
         ONE_TIME = 1, _('One-Time')
         WEEKLY = 2, _('Weekly')
         MONTHLY = 3, _('Monthly')
         YEARLY = 4, _('Yearly')
 
-    class ServicePrivacyStatus(models.IntegerChoices):
-        """Privacy status options of a service"""
+    class ActivityPrivacyStatus(models.IntegerChoices):
+        """Privacy status options of an event"""
         PUBLIC = 1, _('Public')
         PRIVATE = 2, _('Private')
 
-    class ServiceParticipantPicking(models.IntegerChoices):
-        """Participant picking options of a service"""
+    class ActivityParticipantPicking(models.IntegerChoices):
+        """Participant picking options of an event"""
         FREE = 1, _('Free')
         PICK_PARTICIPANTS = 2, _('Pick participants')
 
-    class ServiceCancelled(models.IntegerChoices):
-        """Cancellation options of a service"""
+    class ActivityCancelled(models.IntegerChoices):
+        """Cancellation options of an event"""
         NO = 0, _('No')
         YES = 1, _('Yes')
 
-    class ServiceDelivered(models.IntegerChoices):
+    class ActivityDelivered(models.IntegerChoices):
         """Delivery options of a service"""
         NO = 0, _('No')
         YES = 1, _('Yes')
 
-    class ServiceCategory(models.IntegerChoices):
-        """Category options of a service"""
+    class ActivityCategory(models.IntegerChoices):
+        """Category options of an event"""
         FOOD = 1, _('Food')
         MUSIC = 2, _('Music')
         EDUCATION = 3, _('Education')
@@ -61,7 +57,7 @@ class Service(models.Model):
         TRAVEL_ACTIVITIES = (10, _('Travel Activities'))
 
     uuid = models.UUIDField(
-        verbose_name=_('Service ID'),
+        verbose_name=_('Event ID'),
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
@@ -69,87 +65,81 @@ class Service(models.Model):
     )
 
     title = models.CharField(verbose_name=_('Title'), max_length=500)
-    description = models.TextField(verbose_name=_('Service description'))
+    description = models.TextField(verbose_name=_('Description'))
     location = models.TextField()
     owner = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,
-        verbose_name=_('Service owner')
+        verbose_name=_('Event owner')
     )
-    start_date = models.DateTimeField(verbose_name=_('Start date'))
-    credit = models.PositiveIntegerField(verbose_name=_('Credit'))
+    start_date = models.DateTimeField(verbose_name=_('Start data'))
+    duration = models.PositiveIntegerField(verbose_name=_('Duration'))
     repetition_term = models.PositiveSmallIntegerField(
         verbose_name=_('Repetition term'),
-        choices=ServiceRepetitionTerm.choices,
-        default=ServiceRepetitionTerm.ONE_TIME,
+        choices=ActivityRepetitionTerm.choices,
+        default=ActivityRepetitionTerm.ONE_TIME,
     )
     privacy_status = models.PositiveSmallIntegerField(
         verbose_name=_('Privacy status'),
-        choices=ServicePrivacyStatus.choices,
-        default=ServicePrivacyStatus.PUBLIC,
+        choices=ActivityPrivacyStatus.choices,
+        default=ActivityPrivacyStatus.PUBLIC,
     )
     participant_limit = models.PositiveIntegerField(verbose_name=_('Participant limit'), default=0)
     participant_picking = models.PositiveSmallIntegerField(
-        verbose_name=_('Participant picking'),
-        choices=ServiceParticipantPicking.choices,
-        default=ServiceParticipantPicking.FREE,
+        verbose_name='Participant picking',
+        choices=ActivityParticipantPicking.choices,
+        default=ActivityParticipantPicking.FREE,
     )
     category = models.PositiveSmallIntegerField(
-        verbose_name=_('Service category'),
-        choices=ServiceCategory.choices,
-        default=ServiceCategory.FOOD,
+        verbose_name=_('Event category'),
+        choices=ActivityCategory.choices,
+        default=ActivityCategory.FOOD,
     )
     content = models.TextField(verbose_name=_('Service content'))
     cancelled = models.BooleanField(
         verbose_name='Cancelled',
         max_length=1,
-        choices=ServiceCancelled.choices,
-        default=ServiceCancelled.NO,
+        choices=ActivityCancelled.choices,
+        default=ActivityCancelled.NO,
     )
 
     delivered = models.BooleanField(
         verbose_name='Delivered',
         max_length=1,
-        choices=ServiceDelivered.choices,
-        default=ServiceDelivered.NO,
+        choices=ActivityDelivered.choices,
+        default=ActivityDelivered.NO,
     )
 
-    photo = models.ImageField(upload_to='services', blank=True, null=True)
+    photo = models.ImageField(upload_to='activities', blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def is_one_time_service(self):
-        return self.repetition_term == self.ServiceRepetitionTerm.ONE_TIME
+    def is_one_time_event(self):
+        return self.repetition_term == self.ActivityRepetitionTerm.ONE_TIME
 
-    def is_weekly_service(self):
-        return self.repetition_term == self.ServiceRepetitionTerm.WEEKLY
+    def is_weekly_event(self):
+        return self.repetition_term == self.ActivityRepetitionTerm.WEEKLY
 
-    def is_monthly_service(self):
-        return self.repetition_term == self.ServiceRepetitionTerm.MONTHLY
+    def is_monthly_event(self):
+        return self.repetition_term == self.ActivityRepetitionTerm.MONTHLY
 
-    def is_yearly_service(self):
-        return self.repetition_term == self.ServiceRepetitionTerm.YEARLY
+    def is_yearly_event(self):
+        return self.repetition_term == self.ActivityRepetitionTerm.YEARLY
 
     def is_public(self):
-        return self.privacy_status == self.ServicePrivacyStatus.PUBLIC
+        return self.privacy_status == self.ActivityRepetitionTerm.PUBLIC
 
     def is_private(self):
-        return self.privacy_status == self.ServicePrivacyStatus.PRIVATE
+        return self.privacy_status == self.ActivityPrivacyStatus.PRIVATE
 
     def requires_participant_picking(self):
-        return self.participant_picking == self.ServiceParticipantPicking.PICK_PARTICIPANTS
+        return self.participant_picking == self.ActivityParticipantPicking.PICK_PARTICIPANTS
 
     def attendance_free(self):
-        return self.participant_picking == self.ServiceParticipantPicking.FREE
+        return self.participant_picking == self.ActivityParticipantPicking.FREE
 
     def is_cancelled(self):
-        return self.cancelled == self.ServiceCancelled.YES
-
-    def is_delivered(self):
-        return self.delivered == self.ServiceDelivered.YES
-
-    def get_absolute_url(self):
-        return reverse('services.detail', kwargs={'pk': self.pk})
+        return self.cancelled == self.ActivityCancelled.YES
 
     def get_latitude(self):
         payload = json.loads(str(self.location).replace("\\'", '"'))
@@ -201,19 +191,19 @@ class Service(models.Model):
         return wrapper
 
 
-class ServiceAttendanceRequest(models.Model):
+class ActivityAttendanceRequest(models.Model):
 
     class Meta:
         ordering = ['created_at']
 
-    class ServiceAttendanceRequestStatus(models.IntegerChoices):
-        """Approval status options of a service request"""
+    class ActivityAttendanceRequestStatus(models.IntegerChoices):
+        """Approval status options of an event request"""
         APPROVED = 1, _('Approved')
         DECLINED = 2, _('Declined')
-        WAITING_FOR_APPROVAL = 3, _('Waiting for service owner\'s approval')
+        WAITING_FOR_APPROVAL = 3, _('Waiting for event owner\'s approval')
 
     uuid = models.UUIDField(
-        verbose_name=_('Service attendance request ID'),
+        verbose_name=_('Event attendance request ID'),
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
@@ -222,25 +212,24 @@ class ServiceAttendanceRequest(models.Model):
     member = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,
-        verbose_name=_('Member requesting to attend to the service'),
-        related_name='member_requested'
+        verbose_name=_('Member requesting to attend to the event'),
+        related_name='activity_member_requested'
     )
-    service = models.ForeignKey(
-        'Service',
+    activity = models.ForeignKey(
+        'Activity',
         on_delete=models.CASCADE,
-        verbose_name=_('Service requested to attend')
     )
     owner = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member to approve'),
-        related_name='owner',
+        related_name='activity_owner',
         default=None
     )
     status = models.PositiveSmallIntegerField(
-        verbose_name=_('Service attendance request status'),
-        choices=ServiceAttendanceRequestStatus.choices,
-        default=ServiceAttendanceRequestStatus.WAITING_FOR_APPROVAL,
+        verbose_name=_('Event attendance request status'),
+        choices=ActivityAttendanceRequestStatus.choices,
+        default=ActivityAttendanceRequestStatus.WAITING_FOR_APPROVAL,
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -265,24 +254,24 @@ class ServiceAttendanceRequest(models.Model):
         return wrapper
 
     @property
-    def service_indexing(self):
+    def activity_indexing(self):
         wrapper = dict_to_obj({
-            'uuid': self.service.pk,
-            'title': self.service.title,
+            'uuid': self.activity.pk,
+            'title': self.activity.title,
         })
 
         return wrapper
 
 
-class ServiceAttendance(models.Model):
+class ActivityAttendance(models.Model):
 
-    class ServiceAttendanceStatus(models.IntegerChoices):
-        """Approval status options of a service request"""
+    class ActivityAttendanceStatus(models.IntegerChoices):
+        """Attendance status options of an event"""
         ACTIVE = 1, _('Active')
         CANCELLED = 2, _('Cancelled')
 
     uuid = models.UUIDField(
-        verbose_name=_('Service attendance ID'),
+        verbose_name=_('Event attendance ID'),
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
@@ -292,14 +281,14 @@ class ServiceAttendance(models.Model):
     member = models.ForeignKey(
         'members.Member',
         on_delete=models.CASCADE,
-        verbose_name=_('Member attending to the service'),
-        related_name='member_attending'
+        verbose_name=_('Member attending to the event'),
+        related_name='activity_member_attending'
     )
 
-    service = models.ForeignKey(
-        'Service',
+    activity = models.ForeignKey(
+        'Activity',
         on_delete=models.CASCADE,
-        verbose_name=_('Attended service'),
+        verbose_name=_('Attended activity'),
         related_name='attendances',
     )
 
@@ -307,14 +296,14 @@ class ServiceAttendance(models.Model):
         'members.Member',
         on_delete=models.CASCADE,
         verbose_name=_('Member to approve'),
-        related_name='attendance_owner',
+        related_name='activity_attendance_owner',
         default=None
     )
 
     status = models.PositiveSmallIntegerField(
-        verbose_name=_('Service attendance status'),
-        choices=ServiceAttendanceStatus.choices,
-        default=ServiceAttendanceStatus.ACTIVE,
+        verbose_name=_('Activity attendance status'),
+        choices=ActivityAttendanceStatus.choices,
+        default=ActivityAttendanceStatus.ACTIVE,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -340,45 +329,45 @@ class ServiceAttendance(models.Model):
         return wrapper
 
     @property
-    def service_indexing(self):
+    def activity_indexing(self):
         wrapper = dict_to_obj({
-            'uuid': self.service.pk,
-            'title': self.service.title,
+            'uuid': self.activity.pk,
+            'title': self.activity.title,
         })
 
         return wrapper
 
 
-class ServiceRate(models.Model):
-    class ServiceRateValue(models.IntegerChoices):
-        """Service rate values"""
+class ActivityRate(models.Model):
+
+    class ActivityRateValue(models.IntegerChoices):
+        """Event rate values"""
         TERRIBLE = 1, _('Terrible')
         BAD = 2, _('Bad')
         NEUTRAL = 3, _('Neutral')
         GOOD = 4, _('Good')
         EXCELLENT = 5, _('Excellent')
     uuid = models.UUIDField(
-        verbose_name=_('Service rate ID'),
+        verbose_name=_('Event rate ID'),
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
         unique=True,
     )
-    voter = models.ForeignKey(
+    voter = models.OneToOneField(
         'members.Member',
         on_delete=models.CASCADE,
-        verbose_name=_('Member attending to the service'),
+        verbose_name=_('Member attending to the event')
     )
-    service = models.ForeignKey(
-        'Service',
+    activity = models.ForeignKey(
+        'Activity',
         on_delete=models.CASCADE,
-        verbose_name=_('Attended service')
     )
     rate = models.PositiveSmallIntegerField(
-        verbose_name=_('Service rate value'),
-        choices=ServiceRateValue.choices,
+        verbose_name=_('Event rate value'),
+        choices=ActivityRateValue.choices,
     )
-    content = models.TextField(verbose_name=_('Member comment for service'), null=True, blank=True)
+    content = models.TextField(verbose_name=_('Member comment for event'))
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
@@ -392,10 +381,10 @@ class ServiceRate(models.Model):
         return wrapper
 
     @property
-    def service_indexing(self):
+    def activity_indexing(self):
         wrapper = dict_to_obj({
-            'uuid': self.service.pk,
-            'title': self.service.title,
+            'uuid': self.activity.pk,
+            'title': self.activity.title,
         })
 
         return wrapper
