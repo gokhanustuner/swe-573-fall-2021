@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'events',
     'activities',
     'members',
     'services',
@@ -53,7 +52,6 @@ INSTALLED_APPS = [
     'easy_maps',
     'PIL',
     'django_mysql',
-    'django_seed',
 ]
 
 MIDDLEWARE = [
