@@ -1,5 +1,5 @@
 {% load static %}
-{% load service_extras %}
+{% load activity_extras %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,9 +52,9 @@
 
             $('#submit-button').click(function () {
                 let request = axios.post(
-                    '{% url 'services.rate' %}',
+                    '{% url 'activities.rate' %}',
                     {
-                        'service_id': $('#service_id').val(),
+                        'event_id': $('#event_id').val(),
                         'voter_id': '{{ user.pk }}',
                         'content': $('#content').val(),
                         'rate': $('#rate').val(),
@@ -84,9 +84,9 @@
 
             $('#attend').click(function () {
                 let request = axios.post(
-                    '{% url 'services.attend' %}',
+                    '{% url 'activities.attend' %}',
                     {
-                        'service_id': $('#service_id').val()
+                        'event_id': $('#event_id').val()
                     },
                     {
                         headers: {
@@ -96,10 +96,8 @@
                     }
                 ).then(function (response) {
                     $('#attend').attr('style', 'display: none !important;')
-                    $('#insufficient-credit').attr('style', 'display: none !important;')
                     $('#cancel').removeAttr('style')
                     $('#cancel').attr('style', 'cursor: pointer;')
-                    $('#member-credit').html(response.data.credit + 'h');
 
                     request = null;
                 }).catch(function (error) {
@@ -112,9 +110,9 @@
 
             $('#cancel').click(function () {
                 let request = axios.post(
-                    '{% url 'services.cancel_attendance' %}',
+                    '{% url 'activities.cancel_attendance' %}',
                     {
-                        'service_id': $('#service_id').val()
+                        'event_id': $('#event_id').val()
                     },
                     {
                         headers: {
@@ -124,10 +122,8 @@
                     }
                 ).then(function (response) {
                     $('#cancel').attr('style', 'display: none !important;')
-                    $('#insufficient-credit').attr('style', 'display: none !important;')
                     $('#attend').removeAttr('style')
                     $('#attend').attr('style', 'cursor: pointer;')
-                    $('#member-credit').html(response.data.credit + 'h');
 
                     request = null;
                 }).catch(function (error) {
@@ -145,7 +141,7 @@
 
     <div class="preloader"></div>
 
-    
+
     <div class="main-wrapper">
 
         <div class="nav-header bg-white shadow-xs border-0">
@@ -209,39 +205,39 @@
         </nav>
         <!-- main content -->
         <div class="main-content right-chat-active">
-            
+
             <div class="middle-sidebar-bottom ps-0 pe-0">
                 <div class="middle-sidebar-left pe-0">
                     <div class="row">
                         <div class="col-xl-12 col-xxl-12 col-lg-12">
-                            {% if service.photo == null or service.photo == '' %}
+                            {% if event.photo == null or event.photo == '' %}
                                 <img style="width: 100%;" src="https://via.placeholder.com/960x600.png" alt="event-image" class="rounded-3">
                             {% else %}
-                                <img style="width: 100%;" src="{{ service.photo }}" alt="service-image" class="rounded-3">
+                                <img style="width: 100%;" src="{{ event.photo }}" alt="event-image" class="rounded-3">
                             {% endif %}
-                        </div>               
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-xl-8 col-xxl-9 col-lg-8">
                             <div class="card d-block mt-3 border-0 shadow-xss bg-white p-lg-5 p-4">
-                                <span class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 bg-gold-gradiant d-inline-block text-white ">Service</span>
-                                {% if service.owner.id == user.pk %}
+                                <span class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 bg-mini-gradiant d-inline-block text-white ">Event</span>
+                                {% if event.owner.id == user.pk %}
                                     <h5 style="margin-left: 2rem;" class="d-inline-block font-xssss fw-600 text-grey-500 me-0">
-                                        <a href="{% url 'services.update' service.uuid %}" target="_blank" class="btn-round-sm bg-greylight ti-pencil text-grey-500 me-1"></a>
-                                        Edit Service
+                                        <a href="{% url 'activities.update' event.uuid %}" target="_blank" class="btn-round-sm bg-greylight ti-pencil text-grey-500 me-1"></a>
+                                        Edit Event
                                     </h5>
                                 {% endif %}
-                                <h2 class="fw-700 font-lg mt-3 mb-2 lh-3">{{ service.title }}</h2>
+                                <h2 class="fw-700 font-lg mt-3 mb-2 lh-3">{{ event.title }}</h2>
                                 <h5 class="mt-0 mb-0 me-2 d-inline-block font-xssss fw-600 text-grey-500">
                                     <i class="btn-round-sm bg-greylight ti-calendar text-grey-500 me-1"></i>
-                                    {{ service.start_date|date:'d/m/Y H:i' }}
+                                    {{ event.start_date|date:'d/m/Y H:i' }}
                                 </h5>
                                 <h5 class="mt-0 mb-0 me-0 pl-2 d-inline-block font-xssss fw-600 text-grey-500">
                                     <i class="btn-round-sm bg-greylight ti-location-pin text-grey-500 me-1"></i>
-                                    {{ service.formatted_address }}
+                                    {{ event.formatted_address }}
                                 </h5>
-                                <p class="font-xsss fw-500 text-grey-500 lh-30 pe-5 mt-3 me-5">{{ service.description|truncatechars:400 }}</p>
-                                
+                                <p class="font-xsss fw-500 text-grey-500 lh-30 pe-5 mt-3 me-5">{{ event.description|truncatechars:400 }}</p>
+
                                 <div class="clearfix"></div>
                                 <div class="star d-block w-100 text-left mt-2">
                                     {% for star in positive_overall_iterator %}
@@ -252,46 +248,40 @@
                                     {% endfor %}
                                 </div>
                                 <p class="review-link font-xssss fw-600 text-grey-500 lh-3 mb-0">
-                                    ({{ service_rates.count }} rating{{ service_rates.count|pluralize }} ) {{ service_rates.count }} member{{ service_rates.count|pluralize }} review
+                                    ({{ event_rates.count }} rating{{ event_rates.count|pluralize }} ) {{ event_rates.count }} member{{ event_rates.count|pluralize }} review
                                 </p>
                                 <div class="clearfix"></div>
                                 <h5 class="mt-4 mb-4 d-inline-block font-xssss fw-600 text-grey-500 me-2">
                                     <i class="btn-round-sm bg-greylight ti-time text-grey-500 me-1"></i>
-                                    {{ service.credit }}h
+                                    {{ event.duration }}h
                                 </h5>
                                 <h5 class="mt-4 mb-4 d-inline-block font-xssss fw-600 text-grey-500 me-0">
-                                    <a href="{% url 'services.attendants' service.uuid %}" target="_blank" class="btn-round-sm bg-greylight ti-user text-grey-500 me-1"></a>
+                                    <a href="{% url 'activities.attendants' event.uuid %}" target="_blank" class="btn-round-sm bg-greylight ti-user text-grey-500 me-1"></a>
                                     {% if all_attendance.count > 0 %}
                                         {{ all_attendance.count }} people attending
                                     {% else %}
-                                        Nobody attended to this service yet
+                                        Nobody attended to this event yet
                                     {% endif %}
                                 </h5>
                                 <div class="clearfix"></div>
 
-                            {% if service.owner.id != user.pk %}
-                                {% if member_status_on_service == 'can_attend' %}
-                                    <a id="attend" style="cursor: pointer;" onclick="void(0)" class="bg-primary-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w200">ATTEND NOW</a>
-                                    <a id="cancel" style="display: none !important;" onclick="void(0)" class="bg-gold-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w250">CANCEL YOUR ATTENDANCE</a>
-                                    <a id="insufficient-credit" style="display: none !important;" onclick="void(0)" class="bg-mini-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w200">INSUFFICIENT CREDIT</a>
-                                {% elif member_status_on_service == 'can_cancel_attendance' %}
-                                    <a id="cancel" style="cursor: pointer;" onclick="void(0)" class="bg-gold-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w250">CANCEL YOUR ATTENDANCE</a>
-                                    <a id="attend" style="display: none !important;" onclick="void(0)" class="bg-primary-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w200">ATTEND NOW</a>
-                                    <a id="insufficient-credit" style="display: none !important;" onclick="void(0)" class="bg-mini-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w200">INSUFFICIENT CREDIT</a>
-                                {% elif member_status_on_service == 'insufficient_credit' %}
-                                    <a id="insufficient-credit" style="cursor: pointer;" onclick="void(0)"  class="bg-mini-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w200">INSUFFICIENT CREDIT</a>
-                                    <a id="attend" style="display: none !important;" onclick="void(0)" class="bg-primary-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w200">ATTEND NOW</a>
-                                    <a id="cancel" style="display: none !important;" onclick="void(0)" class="bg-gold-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w250">CANCEL YOUR ATTENDANCE</a>
+                                {% if event.owner.id != user.pk %}
+                                    {% if member_status_on_event == 'can_attend' %}
+                                        <a id="attend" style="cursor: pointer;" onclick="void(0)" class="bg-primary-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w200">ATTEND NOW</a>
+                                        <a id="cancel" style="display: none !important;" onclick="void(0)" class="bg-gold-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w250">CANCEL YOUR ATTENDANCE</a>
+                                    {% elif member_status_on_event == 'can_cancel_attendance' %}
+                                        <a id="cancel" style="cursor: pointer;" onclick="void(0)" class="bg-gold-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w250">CANCEL YOUR ATTENDANCE</a>
+                                        <a id="attend" style="display: none !important;" onclick="void(0)" class="bg-primary-gradiant border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w200">ATTEND NOW</a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{% url 'activities.update' event.uuid %}" style="cursor: pointer;" onclick="void(0)" class="bg-success border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w300">YOU ARE THE OWNER OF THIS EVENT</a>
                                 {% endif %}
-                            {% else %}
-                                <a href="{% url 'services.update' service.uuid %}" style="cursor: pointer;" onclick="void(0)" class="bg-success border-0 text-white fw-600 text-uppercase font-xssss rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w300">YOU ARE THE OWNER OF THIS SERVICE</a>
-                            {% endif %}
                             </div>
-                            
+
 
                             <div class="card d-block border-0 rounded-3 overflow-hidden p-4 shadow-xss mt-3 alert-success">
                                 <h2 class="fw-700 font-sm mb-3 mt-1 ps-1 text-success mb-4">Ameneties</h2>
-                                {% with service.content|split:"-" as rows %}
+                                {% with event.content|split:"-" as rows %}
                                     <h4 class="font-xssss fw-500 text-grey-600 mb-3 position-relative lh-24">
                                         {{ rows.0 }}
                                         {% for row in rows %}
@@ -308,7 +298,7 @@
                             <div class="card d-block border-0 rounded-3 overflow-hidden p-4 shadow-xss mt-3">
                                 <h2 class="fw-700 font-sm mb-3 mt-1 ps-1 mb-3">Description</h2>
                                 <p class="font-xssss fw-500 lh-28 text-grey-600 mb-0 ps-2">
-                                    {{ service.description }}
+                                    {{ event.description }}
                                 </p>
                             </div>
                         </div>
@@ -320,7 +310,7 @@
                                             <h2 class="display2-size lh-1 m-0 text-grey-900 fw-700">{{ average }}</h2>
                                         </div>
                                         <div class="col-12 text-center">
-                                            <h4 class="font-xssss text-grey-600 fw-600 mt-2">Based on {{ service_rates.count }} rating{{ service_rates.count|pluralize }}</h4>
+                                            <h4 class="font-xssss text-grey-600 fw-600 mt-2">Based on {{ event_rates.count }} rating{{ event_rates.count|pluralize }}</h4>
                                         </div>
                                     </div>
                                     <div class="row mt-3">
@@ -338,7 +328,7 @@
                                     </div>
                                 </div>
 
-                                {% for member_review in service_rates %}
+                                {% for member_review in event_rates %}
                                     <div class="row">
                                         <div class="col-2 text-left">
                                             <figure class="avatar float-left mb-0"><img src="https://via.placeholder.com/50x50.png" alt="image" class="float-right shadow-none w40 me-2"></figure>
@@ -367,7 +357,7 @@
                                     </div>
                                 {% endfor %}
 
-                                {% if service.owner.id != user.pk %}
+                                {% if event.owner.id != user.pk %}
                                     <div id="review-form" class="row">
                                         {% if not member_rated %}
                                             <label class="font-xssss fw-600 mb-0 text-grey-800">Your Rate</label>
@@ -384,7 +374,7 @@
                                                     cols="40"
                                                     rows="5"
                                                     class="form-control mb-0 p-3 h100 bg-greylight lh-16"
-                                                    placeholder="Write your comment about the service..."
+                                                    placeholder="Write your comment about the event..."
                                                     spellcheck="false"
                                                     required=""
                                                     id="content"
@@ -401,18 +391,18 @@
                                             </a>
                                         {% endif %}
                                         <input type="hidden" id="rate" name="rate" value="1">
-                                        <input type="hidden" id="service_id" name="service_id" value="{{ service.uuid }}">
+                                        <input type="hidden" id="event_id" name="event_id" value="{{ event.uuid }}">
                                     </div>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
-                 
-            </div>            
+
+            </div>
         </div>
         <!-- main content -->
-        
+
         <div class="app-footer border-0 shadow-lg bg-primary-gradiant">
             <a href="{% url 'home.feed' %}" class="nav-content-bttn nav-center"><i class="feather-home"></i></a>
             <a href="shop-2.html" class="nav-content-bttn"><i class="feather-layers"></i></a>
@@ -437,7 +427,7 @@
     <script src="{% static 'public/js/plugin.js' %}"></script>
     <script src="{% static 'public/js/lightbox.js' %}"></script>
     <script src="{% static 'public/js/scripts.js' %}"></script>
-    
+
 </body>
 
 </html>

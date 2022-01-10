@@ -28,7 +28,7 @@
                 }
             });
 
-            let form = document.getElementById('service-form');
+            let form = document.getElementById('event-form');
             let previousQueryLength;
             form.addEventListener('keyup', function(event) {
                 event.preventDefault()
@@ -86,7 +86,7 @@
             $('#submit-button').click(function (event) {
                 event.preventDefault();
                 $('#location').val($('#location-json').val());
-                $('#service-form').submit();
+                $('#event-form').submit();
             });
 
             $(document).mouseup(function(e) {
@@ -105,7 +105,7 @@
 
     <div class="preloader"></div>
 
-    
+
     <div class="main-wrapper">
         {% if form.errors and form.non_field_errors %}
             <div class="alert alert-danger">
@@ -179,18 +179,18 @@
         <!-- navigation left -->
         <!-- main content -->
         <div class="main-content bg-lightblue theme-dark-bg right-chat-active">
-            
+
             <div class="middle-sidebar-bottom">
                 <div class="middle-sidebar-left">
                     <div class="middle-wrap">
                         <div class="card w-100 border-0 bg-white shadow-xs p-0 mb-4">
                             <div class="card-body p-4 w-100 bg-current border-0 d-flex rounded-3">
                                 <a href="{% url 'home.feed' %}" class="d-inline-block mt-2"><i class="ti-arrow-left font-sm text-white"></i></a>
-                                <h4 class="font-xs text-white fw-600 ms-4 mb-0 mt-2">Create Service</h4>
+                                <h4 class="font-xs text-white fw-600 ms-4 mb-0 mt-2">Create Event</h4>
                             </div>
                             <div class="card-body p-lg-5 p-4 w-100 border-0 ">
 
-                            <form method="post" id="service-form" enctype="multipart/form-data">
+                            <form method="post" id="event-form" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="row" style="position: relative;">
                                     <div class="col-lg-6 mb-3">
@@ -242,11 +242,11 @@
 
                                     <div class="col-lg-6 mb-3">
                                         <div class="form-group">
-                                            <label class="mont-font fw-600 font-xsss">Credit(s)</label>
-                                            {{ form.credit }}
+                                            <label class="mont-font fw-600 font-xsss">Duration(s)</label>
+                                            {{ form.duration }}
                                             {% if form.errors %}
                                                 <div class="invalid-feedback">
-                                                    {{ form.credit.errors.0|escape }}
+                                                    {{ form.duration.errors.0|escape }}
                                                 </div>
                                             {% endif %}
                                         </div>
@@ -343,7 +343,7 @@
                                         <div class="card mt-3 border-0">
                                             <div class="card-body d-flex justify-content-between align-items-end p-0">
                                                 <div class="form-group mb-0 w-100">
-                                                    <label class="mont-font fw-600 font-xsss">Photo for Service</label>
+                                                    <label class="mont-font fw-600 font-xsss">Photo for Event</label>
                                                     <p class="mb-0 lh-16"></p>
                                                     {{ form.photo }}
                                                     <label for="file" class="rounded-3 text-center bg-white btn-tertiary js-labelFile p-4 w-100 border-dashed">
@@ -366,11 +366,11 @@
                         <!-- <div class="card w-100 border-0 p-2"></div> -->
                     </div>
                 </div>
-                 
-            </div>            
+
+            </div>
         </div>
         <!-- main content -->
-        
+
         <div class="app-footer border-0 shadow-lg bg-primary-gradiant">
             <a href="{% url 'home.feed' %}" class="nav-content-bttn nav-center"><i class="feather-home"></i></a>
             <a href="shop-2.html" class="nav-content-bttn"><i class="feather-layers"></i></a>

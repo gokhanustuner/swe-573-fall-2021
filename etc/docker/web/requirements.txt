@@ -17,3 +17,7 @@ python-decouple>=3.5,<4.0
 django-bootstrap-v5==1.0.8
 Pillow>=9.0.0,<10.0.0
 mariadb-dyncol>=3.4.0,<4.0.0
+django-event-system==1.0.1
+gevent==21.12.0
+djangoevents==0.14.1
+model-observer==0.0.22
