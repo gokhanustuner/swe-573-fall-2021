@@ -273,6 +273,7 @@ class ServiceRateDocument(Document):
     )
 
     rate = fields.IntegerField()
+    negative_rate = fields.IntegerField(attr='negative_rate_field_indexing')
     content = fields.TextField()
     created_at = fields.DateField()
 

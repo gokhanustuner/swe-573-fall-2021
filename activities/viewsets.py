@@ -173,7 +173,7 @@ class ActivityAttendanceRequestDocumentViewSet(DocumentViewSet):
     filter_fields = {
         # 'id': None,
         'member_id': 'member.id',
-        'activity_id': 'service.id',
+        'activity_id': 'activity.id',
         # 'title': 'city.name.raw',
     }
 
@@ -191,7 +191,7 @@ class ActivityRateDocumentViewSet(DocumentViewSet):
     filter_fields = {
         # 'id': None,
         'voter_id': 'voter.id',
-        'activity_id': 'service.id',
+        'activity_id': 'activity.id',
         # 'title': 'city.name.raw',
     }
 

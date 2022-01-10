@@ -1,8 +1,10 @@
 import uuid
+import json
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_elasticsearch_dsl_drf.wrappers import dict_to_obj
+from django.urls import reverse
 
 
 class Activity(models.Model):
@@ -140,6 +142,9 @@ class Activity(models.Model):
 
     def is_cancelled(self):
         return self.cancelled == self.ActivityCancelled.YES
+
+    def get_absolute_url(self):
+        return reverse('activities.detail', kwargs={'pk': self.pk})
 
     def get_latitude(self):
         payload = json.loads(str(self.location).replace("\\'", '"'))
@@ -369,6 +374,10 @@ class ActivityRate(models.Model):
     )
     content = models.TextField(verbose_name=_('Member comment for event'))
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def negative_rate_field_indexing(self):
+        return 5 - self.rate
 
     @property
     def voter_indexing(self):

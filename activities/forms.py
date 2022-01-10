@@ -25,6 +25,7 @@ class ActivityCreateForm(forms.ModelForm):
     }))
     start_date = forms.DateTimeField(widget=forms.TextInput(attrs={
         'class': 'form-control',
+        'id': 'datepicker',
     }))
     duration = forms.IntegerField(widget=forms.TextInput(attrs={
         'class': 'form-control',
@@ -56,6 +57,10 @@ class ActivityCreateForm(forms.ModelForm):
         'placeholder': 'Write here about the content of your event...',
         'spellcheck': 'false',
     }))
+    photo = forms.ImageField(widget=forms.FileInput(attrs={
+        'class': 'input-file',
+        'id': 'file',
+    }))
 
     class Meta:
         model = Activity
@@ -71,6 +76,7 @@ class ActivityCreateForm(forms.ModelForm):
             'privacy_status',
             'participant_picking',
             'content',
+            'photo',
         )
 
 
@@ -88,6 +94,7 @@ class ActivityUpdateForm(forms.ModelForm):
     }))
     start_date = forms.DateTimeField(widget=forms.TextInput(attrs={
         'class': 'form-control',
+        'id': 'datepicker',
     }))
     duration = forms.IntegerField(widget=forms.TextInput(attrs={
         'class': 'form-control',
@@ -125,6 +132,10 @@ class ActivityUpdateForm(forms.ModelForm):
         'placeholder': 'Write here about the content of your service...',
         'spellcheck': 'false',
     }))
+    photo = forms.ImageField(widget=forms.FileInput(attrs={
+        'class': 'input-file',
+        'id': 'file',
+    }))
 
     class Meta:
         model = Activity
@@ -142,4 +153,5 @@ class ActivityUpdateForm(forms.ModelForm):
             'cancelled',
             'delivered',
             'content',
+            'photo',
         )

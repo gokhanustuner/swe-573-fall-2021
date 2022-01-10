@@ -52,7 +52,7 @@
 
                             $('.service-item').click(function() {
                                 let resultIndex = $(this).attr('id').split('-')[1];
-                                window.top.location.href = '/services/' + response.data[resultIndex].uuid;
+                                window.top.location.href = '/activities/' + response.data[resultIndex].uuid;
                             });
                             request = null;
                         })
@@ -293,8 +293,8 @@
                             <div class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3">
                                 <div class="card-body d-flex align-items-center p-0">
                                     <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
-                                        All {{ all_attendance.count }} attendant{{ all_attendance.count|pluralize }} to
-                                        <a href="{% url 'services.detail' service.uuid %}">{{ service.title }}</a> service</h2>
+                                        All {{ all_attendance.count }} attendant{{ all_attendance|pluralize }} to
+                                        <a href="{% url 'activities.detail' activity.uuid %}">{{ activity.title }}</a> event</h2>
                                 </div>
                             </div>
 

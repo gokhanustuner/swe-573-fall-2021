@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'easy_maps',
     'PIL',
     'django_mysql',
+    'django_seed',
 ]
 
 MIDDLEWARE = [

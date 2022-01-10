@@ -21,6 +21,7 @@ class ServiceCreateForm(forms.ModelForm):
     }))
     start_date = forms.DateTimeField(widget=forms.TextInput(attrs={
         'class': 'form-control',
+        'id': 'datepicker',
     }))
     credit = forms.IntegerField(widget=forms.TextInput(attrs={
         'class': 'form-control',
@@ -52,6 +53,10 @@ class ServiceCreateForm(forms.ModelForm):
         'placeholder': 'Write here about the content of your service...',
         'spellcheck': 'false',
     }))
+    photo = forms.ImageField(widget=forms.FileInput(attrs={
+        'class': 'input-file',
+        'id': 'file',
+    }))
 
     class Meta:
         model = Service
@@ -67,6 +72,7 @@ class ServiceCreateForm(forms.ModelForm):
             'privacy_status',
             'participant_picking',
             'content',
+            'photo',
         )
 
 
@@ -84,6 +90,7 @@ class ServiceUpdateForm(forms.ModelForm):
     }))
     start_date = forms.DateTimeField(widget=forms.TextInput(attrs={
         'class': 'form-control',
+        'id': 'datepicker',
     }))
     credit = forms.IntegerField(widget=forms.TextInput(attrs={
         'class': 'form-control',
@@ -121,6 +128,10 @@ class ServiceUpdateForm(forms.ModelForm):
         'placeholder': 'Write here about the content of your service...',
         'spellcheck': 'false',
     }))
+    photo = forms.ImageField(widget=forms.FileInput(attrs={
+        'class': 'input-file',
+        'id': 'file',
+    }))
 
     class Meta:
         model = Service
@@ -138,4 +149,5 @@ class ServiceUpdateForm(forms.ModelForm):
             'cancelled',
             'delivered',
             'content',
+            'photo',
         )

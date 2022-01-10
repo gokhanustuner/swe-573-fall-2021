@@ -114,7 +114,7 @@ class Service(models.Model):
         default=ServiceDelivered.NO,
     )
 
-    photo = models.ImageField(upload_to='services', blank=True, null=True)
+    photo = models.ImageField(upload_to='services/', blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -380,6 +380,10 @@ class ServiceRate(models.Model):
     )
     content = models.TextField(verbose_name=_('Member comment for service'), null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def negative_rate_field_indexing(self):
+        return 5 - self.rate
 
     @property
     def voter_indexing(self):
