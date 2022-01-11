@@ -27,23 +27,6 @@ def feed(request):
         service_items = sorted(services, key=lambda x: random.random())
         event_items = sorted(events, key=lambda x: random.random())
         items = sorted(service_items + event_items, key=lambda x: random.random())
-        """
-        service_attendances = ServiceAttendanceDocument.search().filter(
-            'nested',
-            path='member',
-            query=Q('match', member__id=request.user.pk)
-        ).sort('-created_at')
-        event_attendances = ActivityAttendanceDocument.search().filter(
-            'nested',
-            path='member',
-            query=Q('match', member__id=request.user.pk)
-        ).sort('-created_at')
-
-        service_attendance_items = sorted(service_attendances, key=lambda x: random.random())
-        event_attendance_items = sorted(event_attendances, key=lambda x: random.random())
-        attendance_items = sorted(service_attendance_items + event_attendance_items, key=lambda x: random.random())
-        # attendance_sort_dictionary
-        """
     elif request.GET.get('attended'):
         if request.GET.get('attended') == 'services':
             service_attendances = ServiceAttendanceDocument.search().filter(
