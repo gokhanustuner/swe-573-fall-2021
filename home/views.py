@@ -6,8 +6,8 @@ import json
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
-from services.documents import ServiceDocument, ServiceRateDocument
-from activities.documents import ActivityDocument, ActivityRateDocument
+from services.documents import ServiceDocument, ServiceRateDocument, ServiceAttendanceDocument
+from activities.documents import ActivityDocument, ActivityRateDocument, ActivityAttendanceDocument
 from elasticsearch_dsl.query import Q
 from functools import reduce
 from django.views.decorators.cache import never_cache
@@ -19,13 +19,63 @@ from decimal import *
 @login_required
 def feed(request):
     context = {}
-    if not request.GET.get('nearby'):
-        services = ServiceDocument.search().filter('match', delivered=True).sort('-start_date')
+    services = ServiceDocument.search()
+    events = ActivityDocument.search()
+    if not request.GET.get('nearby') and not request.GET.get('attended'):
+        services = ServiceDocument.search().sort('-start_date')
         events = ActivityDocument.search().sort('-start_date')
-
         service_items = sorted(services, key=lambda x: random.random())
         event_items = sorted(events, key=lambda x: random.random())
         items = sorted(service_items + event_items, key=lambda x: random.random())
+        """
+        service_attendances = ServiceAttendanceDocument.search().filter(
+            'nested',
+            path='member',
+            query=Q('match', member__id=request.user.pk)
+        ).sort('-created_at')
+        event_attendances = ActivityAttendanceDocument.search().filter(
+            'nested',
+            path='member',
+            query=Q('match', member__id=request.user.pk)
+        ).sort('-created_at')
+
+        service_attendance_items = sorted(service_attendances, key=lambda x: random.random())
+        event_attendance_items = sorted(event_attendances, key=lambda x: random.random())
+        attendance_items = sorted(service_attendance_items + event_attendance_items, key=lambda x: random.random())
+        # attendance_sort_dictionary
+        """
+    elif request.GET.get('attended'):
+        if request.GET.get('attended') == 'services':
+            service_attendances = ServiceAttendanceDocument.search().filter(
+                'nested',
+                path='member',
+                query=Q('match', member__id=request.user.pk)
+            ).sort('-created_at')
+
+            services = ServiceDocument.search().query(
+                reduce(operator.ior, [
+                    Q('match', uuid=service_attendance.service.uuid) for service_attendance in service_attendances
+                ])
+            ).sort('-start_date')
+
+            items = services
+
+        if request.GET.get('attended') == 'events':
+            event_attendances = ActivityAttendanceDocument.search().filter(
+                'nested',
+                path='member',
+                query=Q('match', member__id=request.user.pk)
+            ).sort('-created_at')
+
+            events = ActivityDocument.search().query(
+                reduce(operator.ior, [
+                    Q('match', uuid=event_attendance.activity.uuid) for event_attendance in event_attendances
+                ])
+            ).sort('-start_date')
+
+            items = events
+    elif request.GET.get('nearby'):
+        pass
     else:
         hostname = socket.gethostname()
         ip_address = socket.gethostbyname(hostname)

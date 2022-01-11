@@ -75,12 +75,19 @@
             <div class="container ps-0 pe-0">
                 <div class="nav-content">
                     <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1 mb-2 mt-2">
-                        <div class="nav-caption fw-600 font-xssss text-grey-500"><span>New </span>Feeds</div>
+                        <div class="nav-caption fw-600 font-xssss text-grey-500"><span>Filter by Location </span></div>
                         <ul class="mb-1 top-content">
                             <li class="logo d-none d-xl-block d-lg-block"></li>
-                            <li><a href="default-group.html" class="nav-content-bttn open-font" ><i class="feather-map-pin btn-round-md bg-mini-gradiant me-3"></i><span>Near Events</span></a></li>
-                            <li><a href="default-group.html" class="nav-content-bttn open-font" ><i class="feather-map-pin btn-round-md bg-gold-gradiant me-3"></i><span>Near Services</span></a></li>
-                            <li><a href="{% url 'members.show' user.pk %}" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Author Profile </span></a></li>
+                            <li><a href="/?nearby=events" class="nav-content-bttn open-font" ><i class="feather-map-pin btn-round-md bg-mini-gradiant me-3"></i><span>Nearby Events</span></a></li>
+                            <li><a href="/?nearby=services" class="nav-content-bttn open-font" ><i class="feather-map-pin btn-round-md bg-gold-gradiant me-3"></i><span>Nearby Services</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1 mb-2 mt-2">
+                        <div class="nav-caption fw-600 font-xssss text-grey-500"><span>Me </span></div>
+                        <ul class="mb-1 top-content">
+                            <li class="logo d-none d-xl-block d-lg-block"></li>
+                            <li><a href="/?attended=events" class="nav-content-bttn open-font"><i class="feather-zap btn-round-md bg-mini-gradiant me-3"></i><span>Attended Events </span></a></li>
+                            <li><a href="/?attended=services" class="nav-content-bttn open-font"><i class="feather-zap btn-round-md bg-gold-gradiant me-3"></i><span>Taken Services </span></a></li>
                         </ul>
                     </div>
                     <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1">
@@ -196,16 +203,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="card-body p-0 me-lg-5">
-                                    <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">
-                                        {{ item.description }}
-                                        <br>
-                                        <a href="
-                                            {% if item.meta.index == 'services' %}
-                                                {% url 'services.detail' item.uuid %}
-                                            {% elif item.meta.index == 'activities' %}
-                                                {% url 'activities.detail' item.uuid %}
-                                            {% endif %}
-                                        " class="fw-600 text-primary">Get more info and attend now</a></p>
+                                    <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">{{ item.description }}</p>
                                 </div>
                                 <div class="card-body d-flex-inline p-0">
                                     {% for avg in average_mapping %}
@@ -418,30 +416,6 @@
                     </a>
                 </div>
             </form>
-        </div>
-
-    </div> 
-
-    <div class="modal bottom side fade" id="Modalstries" tabindex="-1" role="dialog" style=" overflow-y: auto;">
-         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content border-0 bg-transparent">
-                <button type="button" class="close mt-0 position-absolute top--30 right--10" data-dismiss="modal" aria-label="Close"><i class="ti-close text-white font-xssss"></i></button>
-                <div class="modal-body p-0">
-                    <div class="card w-100 border-0 rounded-3 overflow-hidden bg-gradiant-bottom bg-gradiant-top">
-                        <div class="owl-carousel owl-theme dot-style3 story-slider owl-dot-nav nav-none">
-                            <div class="item"><img src="https://via.placeholder.com/450x800.png" alt="image"></div>
-                            <div class="item"><img src="https://via.placeholder.com/450x800.png" alt="image"></div>
-                            <div class="item"><img src="https://via.placeholder.com/450x800.png" alt="image"></div>
-                            <div class="item"><img src="https://via.placeholder.com/450x800.png" alt="image"></div>
-                            
-                        </div>
-                    </div>
-                    <div class="form-group mt-3 mb-0 p-3 position-absolute bottom-0 z-index-1 w-100">
-                        <input type="text" class="style2-input w-100 bg-transparent border-light-md p-3 pe-5 font-xssss fw-500 text-white" value="Write Comments">               
-                        <span class="feather-send text-white font-md text-white position-absolute" style="bottom: 35px;right:30px;"></span>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
