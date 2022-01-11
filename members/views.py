@@ -1,12 +1,13 @@
 import random
 import operator
+import json
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_GET
 from django.urls import reverse_lazy
 from members.forms import RegisterForm, LoginForm, MemberProfileUpdateForm
-from members.models import Member, MemberProfile
+from members.models import Member, MemberProfile, SocialDirectedGraph
 from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import authenticate, login
@@ -101,6 +102,11 @@ def show(request, pk):
         if item.uuid in item_rate_totals_mapping.keys():
             average_mapping.append((item.uuid, '{:.2f}'.format(item_rate_totals_mapping[item.uuid] / item_rate_count)))
             item_rate_counts_mapping.append((item.uuid, item_rate_count))
+
+    connection = SocialDirectedGraph.objects.filter(source=request.user, target=member)
+    followers = SocialDirectedGraph.objects.filter(target=member).count()
+    following = SocialDirectedGraph.objects.filter(source=member).count()
+
     return render(request, 'members/member_detail.html', {
         'member': member,
         'services': services,
@@ -110,6 +116,9 @@ def show(request, pk):
         'item_rates_mapping': item_rates_mapping,
         'item_rate_counts_mapping': item_rate_counts_mapping,
         'average_mapping': average_mapping,
+        'connection': connection,
+        'followers': followers,
+        'following': following,
     })
 
 
@@ -191,6 +200,34 @@ def services(request, pk):
     return render(request, 'members/services.html', {
         'services': service_list,
     })
+
+
+@never_cache
+@login_required
+def follow(request):
+    request_data = json.loads(request.body)
+    target = Member.objects.get(pk=request_data['target_id'])
+    graph = SocialDirectedGraph(
+        source=request.user,
+        target=target,
+    )
+
+    graph.save()
+
+    return JsonResponse({'status': 'success'})
+
+
+@never_cache
+@login_required
+def unfollow(request):
+    request_data = json.loads(request.body)
+    target = Member.objects.get(pk=request_data['target_id'])
+    SocialDirectedGraph.objects.filter(
+        source=request.user,
+        target=target,
+    ).delete()
+
+    return JsonResponse({'status': 'success'})
 
 
 def test_func(self):
