@@ -99,6 +99,11 @@
             });
         });
     </script>
+    <style>
+        .navigation .nav-content span {
+            font-size: 11px !important;
+        }
+    </style>
 </head>
 
 <body class="color-theme-blue mont-font">
@@ -162,8 +167,8 @@
                         <div class="nav-caption fw-600 font-xssss text-grey-500"><span>Filter by Location </span></div>
                         <ul class="mb-1 top-content">
                             <li class="logo d-none d-xl-block d-lg-block"></li>
-                            <li><a href="/?nearby=events" class="nav-content-bttn open-font" ><i class="feather-map-pin btn-round-md bg-mini-gradiant me-3"></i><span>Nearby Events</span></a></li>
-                            <li><a href="/?nearby=services" class="nav-content-bttn open-font" ><i class="feather-map-pin btn-round-md bg-gold-gradiant me-3"></i><span>Nearby Services</span></a></li>
+                            <li><a href="/?nearby=events" class="nav-content-bttn open-font" ><i class="feather-map-pin btn-round-md bg-mini-gradiant me-3"></i><span>Nearby Events (40km)</span></a></li>
+                            <li><a href="/?nearby=services" class="nav-content-bttn open-font" ><i class="feather-map-pin btn-round-md bg-gold-gradiant me-3"></i><span>Nearby Services (40km)</span></a></li>
                         </ul>
                     </div>
                     <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1 mb-2 mt-2">
@@ -172,13 +177,6 @@
                             <li class="logo d-none d-xl-block d-lg-block"></li>
                             <li><a href="/?attended=events" class="nav-content-bttn open-font"><i class="feather-zap btn-round-md bg-mini-gradiant me-3"></i><span>Attended Events </span></a></li>
                             <li><a href="/?attended=services" class="nav-content-bttn open-font"><i class="feather-zap btn-round-md bg-gold-gradiant me-3"></i><span>Taken Services </span></a></li>
-                        </ul>
-                    </div>
-                    <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1">
-                        <div class="nav-caption fw-600 font-xssss text-grey-500"><span></span> Account</div>
-                        <ul class="mb-1">
-                            <li class="logo d-none d-xl-block d-lg-block"></li>
-                            <li><a href="{% url 'members.settings' user.pk %}" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-settings me-3 text-grey-500"></i><span>Settings</span></a></li>
                         </ul>
                     </div>
                 </div>

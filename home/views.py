@@ -12,6 +12,8 @@ from elasticsearch_dsl.query import Q
 from functools import reduce
 from django.views.decorators.cache import never_cache
 from decimal import *
+from members.models import Member
+from django.shortcuts import redirect
 
 
 @require_GET
@@ -58,19 +60,53 @@ def feed(request):
 
             items = events
     elif request.GET.get('nearby'):
-        pass
-    else:
-        hostname = socket.gethostname()
-        ip_address = socket.gethostbyname(hostname)
-        url = 'https://api.ipstack.com/' + ip_address + '?access_key=5dd2d3da467259fc47a71a6507825165'
-        payload = {}
-        headers = {}
-        response = requests.request("GET", url, headers=headers, data=payload)
-        data = json.loads(response['data'])
-        getcontext().prec = 7
-        latitude = Decimal(data['latitude'])
-        longitude = Decimal(data['longitude'])
-        services = ServiceDocument.filter("geo_distance", coordinates={"lat": latitude, "lon": longitude}, distance='1km')
+        member = Member.objects.get(pk=request.user.pk)
+        if (member.profile.get_latitude() is not None and member.profile.get_latitude() != '') and (member.profile.get_longitude() is not None and member.profile.get_latitude() != ''):
+            latitude = '{:.6f}'.format(member.profile.get_latitude())
+            longitude = '{:.6f}'.format(member.profile.get_longitude())
+            if request.GET.get('nearby') == 'events':
+                events = ActivityDocument.search().filter(
+                    "geo_distance",
+                    coordinates={
+                        "lat": float(latitude),
+                        "lon": float(longitude)
+                    },
+                    distance='40km'
+                )
+                items = events
+            elif request.GET.get('nearby') == 'services':
+                services = ServiceDocument.search().filter(
+                    "geo_distance",
+                    coordinates={
+                        "lat": float(latitude),
+                        "lon": float(longitude)
+                    },
+                    distance='40km'
+                )
+                items = services
+            else:
+                events = ActivityDocument.search().filter(
+                    "geo_distance",
+                    coordinates={
+                        "lat": float(latitude),
+                        "lon": float(longitude)
+                    },
+                    distance='40km'
+                )
+                services = ServiceDocument.search().filter(
+                    "geo_distance",
+                    coordinates={
+                        "lat": float(latitude),
+                        "lon": float(longitude)
+                    },
+                    distance='40km'
+                )
+
+                service_items = sorted(services, key=lambda x: random.random())
+                event_items = sorted(events, key=lambda x: random.random())
+                items = sorted(service_items + event_items, key=lambda x: random.random())
+        else:
+            return redirect('members.update', pk=member.pk)
 
     if services.count() > 0:
         service_rates = ServiceRateDocument.search().query(
