@@ -73,6 +73,9 @@
         });
     </script>
     <style>
+        .navigation .nav-content span {
+            font-size: 11px !important;
+        }
         #follow {
             cursor: pointer;
         }
@@ -146,13 +149,6 @@
                             <li class="logo d-none d-xl-block d-lg-block"></li>
                             <li><a href="/?attended=events" class="nav-content-bttn open-font"><i class="feather-zap btn-round-md bg-mini-gradiant me-3"></i><span>Attended Events </span></a></li>
                             <li><a href="/?attended=services" class="nav-content-bttn open-font"><i class="feather-zap btn-round-md bg-gold-gradiant me-3"></i><span>Taken Services </span></a></li>
-                        </ul>
-                    </div>
-                    <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1">
-                        <div class="nav-caption fw-600 font-xssss text-grey-500"><span></span> Account</div>
-                        <ul class="mb-1">
-                            <li class="logo d-none d-xl-block d-lg-block"></li>
-                            <li><a href="{% url 'members.settings' user.pk %}" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-settings me-3 text-grey-500"></i><span>Settings</span></a></li>
                         </ul>
                     </div>
                 </div>
@@ -347,7 +343,6 @@
                                                                 </div>
                                                             </div>
                                                             <div class="message-wrap" style="
-                                                                background-color: #E6EEFF;
                                                                 box-shadow: none;
                                                                 padding-top: 0;
                                                                 font-size: 12px;
