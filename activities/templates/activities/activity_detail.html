@@ -176,7 +176,8 @@
             <a href="{% url 'members.show' user.pk %}" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-user font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
 
             <span id="member-credit" class="badge badge-primary text-white badge-pill fw-500 mt-0">{{ user.credit }}h</span>
-            <a class="menu-icon text-center ms-auto p-2" href="{% url 'logout' %}">Logout</a>
+            <a class="menu-icon text-center ms-auto p-2" href="{% url 'members.show' user.pk %}">{{ user.full_name }}</a>
+            <a style="margin-left: 15px !important;" class="menu-icon text-center ms-auto p-2" href="{% url 'logout' %}">Logout</a>
         </div>
         <!-- navigation top -->
 
@@ -220,7 +221,7 @@
                             {% if event.photo == null or event.photo == '' %}
                                 <img style="width: 100%;" src="https://via.placeholder.com/960x600.png" alt="event-image" class="rounded-3">
                             {% else %}
-                                <img style="width: 100%;" src="{{ event.photo }}" alt="event-image" class="rounded-3">
+                                <img style="width: 100%;" src="{{ event.photo }}" alt="https://via.placeholder.com/960x600.png" class="rounded-3">
                             {% endif %}
                         </div>
                     </div>

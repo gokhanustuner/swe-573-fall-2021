@@ -158,7 +158,8 @@
             <a href="{% url 'members.show' user.pk %}" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-user font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
 
             <span class="badge badge-primary text-white badge-pill fw-500 mt-0">{{ user.credit }}h</span>
-            <a class="menu-icon text-center ms-auto p-2" href="{% url 'logout' %}">Logout</a>
+            <a class="menu-icon text-center ms-auto p-2" href="{% url 'members.show' user.pk %}">{{ user.full_name }}</a>
+            <a style="margin-left: 15px !important;" class="menu-icon text-center ms-auto p-2" href="{% url 'logout' %}">Logout</a>
         </div>
         <!-- navigation top -->
 

@@ -1,5 +1,5 @@
 from django import forms
-from members.models import Member
+from members.models import Member, MemberProfile
 
 
 class LoginForm(forms.Form):
@@ -55,3 +55,43 @@ class RegisterForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class MemberProfileUpdateForm(forms.ModelForm):
+    location = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'id': 'location',
+        'style': 'padding: 0.375rem 1.75rem 0.375rem 0.75rem;',
+    }))
+    personal_characteristics = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control mb-0 p-3 h100 bg-greylight lh-16',
+        'rows': 5,
+        'placeholder': 'Write here about the content of your personal characteristics...',
+        'spellcheck': 'false',
+    }))
+    bio = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control mb-0 p-3 h100 bg-greylight lh-16',
+        'rows': 5,
+        'placeholder': 'Write here about the content of your personal characteristics...',
+        'spellcheck': 'false',
+    }))
+    talents = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control mb-0 p-3 h100 bg-greylight lh-16',
+        'rows': 5,
+        'placeholder': 'Write here about the content of your personal characteristics...',
+        'spellcheck': 'false',
+    }))
+    photo = forms.ImageField(widget=forms.FileInput(attrs={
+        'class': 'input-file',
+        'id': 'file',
+    }))
+
+    class Meta:
+        model = MemberProfile
+        fields = (
+            'location',
+            'personal_characteristics',
+            'bio',
+            'talents',
+            'photo',
+        )

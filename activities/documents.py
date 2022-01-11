@@ -142,8 +142,7 @@ class ActivityDocument(Document):
         )
 
     def get_instances_from_related(self, related_instance):
-        if isinstance(related_instance, Member):
-            return related_instance.memberprofile.all()
+        pass
 
 
 @ACTIVITY_ATTENDANCE_INDEX.doc_type
